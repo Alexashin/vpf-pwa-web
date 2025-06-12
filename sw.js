@@ -19,12 +19,21 @@ const assetUrls = [
 ];
 
 self.addEventListener('install', event => {
-    console.log('[SW]: install'); // debug
-
+    console.log('[SW]: install');
     event.waitUntil(
-        caches.open(staticCacheName).then(cache => cache.addAll(assetUrls))
+        (async () => {
+            const cache = await caches.open(staticCacheName);
+            for (const url of assetUrls) {
+                try {
+                    await cache.add(url);
+                } catch (err) {
+                    console.warn('[SW] Не удалось закешировать:', url, err);
+                }
+            }
+        })()
     );
 });
+
 
 self.addEventListener('activate', async event => {
     console.log('[SW]: activate'); // debug
