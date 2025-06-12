@@ -1,0 +1,58 @@
+// Service Worker для VPF-PWA-Web
+const staticCacheName = 'vpf-cache-v1';
+
+const assetUrls = [
+    '/vpf-pwa-web/',
+    '/vpf-pwa-web/index.html',
+    '/vpf-pwa-web/about.html',
+    '/vpf-pwa-web/schedule.html',
+    '/vpf-pwa-web/program.html',
+    '/vpf-pwa-web/partners.html',
+    '/vpf-pwa-web/map.html',
+    '/vpf-pwa-web/location.html',
+    '/vpf-pwa-web/contacts.html',
+    '/vpf-pwa-web/help.html',
+    '/vpf-pwa-web/src/css/style.css',
+    '/vpf-pwa-web/src/js/app.js',
+    '/vpf-pwa-web/manifest.json',
+    // сюда можно добавить и иконки/изображения
+];
+
+self.addEventListener('install', event => {
+    console.log('[SW]: install'); // debug
+
+    event.waitUntil(
+        caches.open(staticCacheName).then(cache => cache.addAll(assetUrls))
+    );
+});
+
+self.addEventListener('activate', async event => {
+    console.log('[SW]: activate'); // debug
+
+    const cacheNames = await caches.keys();
+    await Promise.all(
+        cacheNames
+            .filter(name => name !== staticCacheName)
+            .map(name => caches.delete(name))
+    );
+});
+
+self.addEventListener('fetch', event => {
+    // только GET-запросы
+    if (event.request.method !== 'GET') return;
+
+    event.respondWith(cacheFirst(event.request));
+});
+
+async function cacheFirst(request) {
+    const cached = await caches.match(request);
+    try {
+        return cached ?? await fetch(request);
+    } catch (e) {
+        return cached ?? new Response('Offline', {
+            status: 503,
+            statusText: 'Offline',
+            headers: { 'Content-Type': 'text/plain' }
+        });
+    }
+}
