@@ -13,7 +13,10 @@ const assetUrls = [
     '/vpf-pwa-web/contacts.html',
     '/vpf-pwa-web/help.html',
     '/vpf-pwa-web/manifest.json',
-    // сюда можно добавить и иконки/изображения
+    '/vpf-pwa-web/assets/icons/icon512_maskable.png',
+    '/vpf-pwa-web/assets/icons/icon512_rounded.png',
+    '/vpf-pwa-web/assets/screenshots/desktop.png',
+    '/vpf-pwa-web/assets/screenshots/mobile.png'
 ];
 
 self.addEventListener('install', event => {
