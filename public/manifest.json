@@ -1,8 +1,41 @@
 {
     "name": "VPF Форум 2025",
     "short_name": "VPF",
-    "start_url": "/index.html",
+    "description": "PWA-приложение-визитка XV Воронежского Промышленного Форума",
+    "lang": "ru-RU",
+    "dir": "auto",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#4B0082"
+    "orientation": "portrait",
+    "start_url": "/vpf-pwa-web/",
+    "scope": "/vpf-pwa-web/",
+    "theme_color": "#8936FF",
+    "background_color": "#2EC6FE",
+    "icons": [
+        {
+            "src": "/vpf-pwa-web/assets/icons/icon512_maskable.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/vpf-pwa-web/assets/icons/icon512_rounded.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/vpf-pwa-web/assets/screenshots/desktop.png",
+            "type": "image/png",
+            "sizes": "636x610",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/vpf-pwa-web/assets/screenshots/mobile.png",
+            "type": "image/png",
+            "sizes": "636x610",
+            "form_factor": "narrow"
+        }
+    ]
 }
