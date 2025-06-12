@@ -12,8 +12,6 @@ const assetUrls = [
     '/vpf-pwa-web/location.html',
     '/vpf-pwa-web/contacts.html',
     '/vpf-pwa-web/help.html',
-    '/vpf-pwa-web/src/css/style.css',
-    '/vpf-pwa-web/src/js/app.js',
     '/vpf-pwa-web/manifest.json',
     // сюда можно добавить и иконки/изображения
 ];
