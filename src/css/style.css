@@ -1,1 +1,53 @@
 /* Основные стили всего приложения. Подключается на каждой странице. */
+.headline_big {
+    padding: 20px 0;
+    margin-bottom: 45px;
+    text-align: center;
+}
+.headline7134 {
+    background-color: #0e2e61;
+}   
+.hall-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #fff;
+    border-bottom: 2px solid #003366;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+.event-time-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    border-bottom: 1px solid #003366;
+    margin-bottom: 0.5rem;
+}
+.toggle-btn {
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    text-align: left;
+    font-weight: 500;
+}
+.toggle-btn + .toggle-btn {
+    border-top: none;
+}
+.toggle-content {
+  display: none;
+  padding: 1rem;
+  color : #000;
+  border: 1px solid #ddd;
+  border-top: none;
+  background-color: #fff;
+  animation: fadeDown 0.3s ease-out;
+}
+
+.toggle-content.open {
+  padding: 1rem;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
