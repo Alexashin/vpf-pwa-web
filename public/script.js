@@ -137,6 +137,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadProgramData(); 
+    loadProgramData();
     loadTransferData();
 });        
