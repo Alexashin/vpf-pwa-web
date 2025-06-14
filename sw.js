@@ -1,27 +1,23 @@
 // Service Worker для VPF-PWA-Web
-const staticCacheName = 'vpf-cache-v8';
+const staticCacheName = 'vpf-cache-v10';
 
 const assetUrls = [
     '/vpf-pwa-web/',
     '/vpf-pwa-web/index.html',
     '/vpf-pwa-web/about.html',
     '/vpf-pwa-web/schedule.html',
-    '/vpf-pwa-web/program.html',
     '/vpf-pwa-web/partners.html',
     '/vpf-pwa-web/map.html',
     '/vpf-pwa-web/location.html',
     '/vpf-pwa-web/contacts.html',
-    '/vpf-pwa-web/help.html',
     '/vpf-pwa-web/manifest.json',
     '/vpf-pwa-web/data/program.json',
-    '/vpf-pwa-web/assets/icons/icon512_maskable.png',
-    '/vpf-pwa-web/assets/icons/icon512_rounded.png',
     '/vpf-pwa-web/assets/screenshots/desktop.png',
     '/vpf-pwa-web/assets/screenshots/mobile.png'
 ];
 
 self.addEventListener('install', event => {
-    console.log('[SW]: install');
+    console.log('[SW]: install'); // debug
     event.waitUntil(
         (async () => {
             const cache = await caches.open(staticCacheName);

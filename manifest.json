@@ -4,39 +4,48 @@
   "description": "Приложения XV Воронежского Промышленного Форума",
   "icons": [
     {
-      "src": "assets/icons/assets/icons/appicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icons/appicon-32x32.png",
+      "src": "/vpf-pwa-web/assets/icons/appicon-32x32.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/appicon-48x48.png",
+      "src": "/vpf-pwa-web/assets/icons/appicon-48x48.png",
       "sizes": "48x48",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/appicon-64x64.png",
+      "src": "/vpf-pwa-web/assets/icons/appicon-64x64.png",
       "sizes": "64x64",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/appicon-128x128.png",
+      "src": "/vpf-pwa-web/assets/icons/appicon-128x128.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/appicon-256x256.png",
+      "src": "/vpf-pwa-web/assets/icons/appicon-256x256.png",
       "sizes": "256x256",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/appicon-1024x1024.png",
+      "src": "/vpf-pwa-web/assets/icons/appicon-1024x1024.png",
       "sizes": "1024x1024",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/vpf-pwa-web/assets/screenshots/mobile.png",
+      "sizes": "374x817",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/vpf-pwa-web/assets/screenshots/desktop.png",
+      "sizes": "1917x910",
+      "type": "image/png",
+      "form_factor": "wide"
     }
   ],
   "theme_color": "#0e2e61",
