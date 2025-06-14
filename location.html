@@ -151,44 +151,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const ymap = document.getElementById('ymap');
-            const fallback = document.getElementById('mapFallback');
-
-            const timeout = setTimeout(() => {
-                console.warn('[Карта] Превышен таймаут ожидания ответа. Показываем fallback.');
-                showFallback();
-            }, 5000);
-
-            fetch('https://yandex.ru/favicon.ico', {
-                method: 'HEAD',
-                mode: 'no-cors',
-                cache: 'no-store'
-            })
-                .then(() => {
-                    clearTimeout(timeout);
-                    console.info('[Карта] Доступ к yandex.ru есть. Показываем карту.');
-                    showMap();
-                })
-                .catch(() => {
-                    clearTimeout(timeout);
-                    console.warn('[Карта] Ошибка при проверке доступа к yandex.ru. Показываем fallback.');
-                    showFallback();
-                });
-
-            function showMap() {
-                ymap.style.display = 'block';
-                fallback.style.display = 'none';
-            }
-
-            function showFallback() {
-                ymap.style.display = 'none';
-                fallback.style.display = 'block';
-            }
-        });
-    </script>
-
 </body>
 
 </html>
