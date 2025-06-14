@@ -44,6 +44,7 @@ npm install
 npm run dev       # Запуск в режиме разработки
 npm run build     # Сборка для продакшена
 npm run preview   # Локальный просмотр сборки
+npm run deploy    # Деплой на GitHub Pages
 ```
 
 ---
