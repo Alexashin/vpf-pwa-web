@@ -1,3 +1,4 @@
+//schedule
 async function loadProgramData() {
     try {
         const response = await fetch('/vpf-pwa-web/data/schedule.json');
@@ -10,6 +11,7 @@ async function loadProgramData() {
 
 function renderProgram(events) {
     const container = document.getElementById('programContainer');
+    if (!container) return;
     container.innerHTML = '';
 
     events.forEach((event, index) => {
@@ -44,7 +46,7 @@ function renderProgram(events) {
 }
 
 
-
+//location
 async function loadTransferData() {
     try {
         const response = await fetch('/vpf-pwa-web/data/location.json');
@@ -59,6 +61,8 @@ async function loadTransferData() {
 
 function renderTransfer(transferData) {
     const container = document.getElementById('transferContainer');
+
+    if (!container) return;
 
     if (!transferData || !transferData.buses || transferData.buses.length === 0) {
         container.innerHTML = '<div class="text-muted">Информация о трансфере будет доступна позже</div>';
@@ -94,6 +98,44 @@ function renderTransfer(transferData) {
 
     container.innerHTML = html;
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    const ymap = document.getElementById('ymap');
+    const fallback = document.getElementById('mapFallback')
+
+    if (!ymap || !fallback) return;
+
+    const timeout = setTimeout(() => {
+        console.warn('[Карта] Превышен таймаут ожидания ответа. Показываем fallback.');
+        showFallback();
+    }, 5000)
+    fetch('https://yandex.ru/favicon.ico', {
+        method: 'HEAD',
+        mode: 'no-cors',
+        cache: 'no-store'
+    })
+        .then(() => {
+            clearTimeout(timeout);
+            console.info('[Карта] Доступ к yandex.ru есть. Показываем карту.');
+            showMap();
+        })
+        .catch(() => {
+            clearTimeout(timeout);
+            console.warn('[Карта] Ошибка при проверке доступа к yandex.ru. Показываем fallback.');
+            showFallback();
+        });
+
+    function showMap() {
+        ymap.style.display = 'block';
+        fallback.style.display = 'none';
+    }
+
+    function showFallback() {
+        ymap.style.display = 'none';
+        fallback.style.display = 'block';
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     loadProgramData(); 
     loadTransferData();
