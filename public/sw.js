@@ -1,5 +1,5 @@
 // Service Worker для VPF-PWA-Web
-const staticCacheName = 'vpf-cache-v1';
+const staticCacheName = 'vpf-cache-v2';
 
 const assetUrls = [
     '/vpf-pwa-web/',
@@ -13,6 +13,7 @@ const assetUrls = [
     '/vpf-pwa-web/contacts.html',
     '/vpf-pwa-web/help.html',
     '/vpf-pwa-web/manifest.json',
+    '/vpf-pwa-web/data/program.json',
     '/vpf-pwa-web/assets/icons/icon512_maskable.png',
     '/vpf-pwa-web/assets/icons/icon512_rounded.png',
     '/vpf-pwa-web/assets/screenshots/desktop.png',

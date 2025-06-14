@@ -10,7 +10,6 @@ export default defineConfig({
                 about: resolve(__dirname, 'about.html'),
                 schedule: resolve(__dirname, 'schedule.html'),
                 partners: resolve(__dirname, 'partners.html'),
-                program: resolve(__dirname, 'program.html'),
                 map: resolve(__dirname, 'map.html'),
                 location: resolve(__dirname, 'location.html'),
                 contacts: resolve(__dirname, 'contacts.html'),
