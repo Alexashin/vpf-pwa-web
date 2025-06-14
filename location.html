@@ -116,9 +116,17 @@
             <p><i class="bi bi-geo-alt-fill"></i> ул. Театральная, 17, Воронеж</p>
 
             <!-- Карта -->
-            <div class="map-container">
-                <script type="text/javascript" charset="utf-8" async
-                    src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A31f6f7c70ac997c95b16ced668ab360f516a85f98f3acf5faa0d309c72e1099f&amp;width=100%&amp;height=100%&amp;lang=ru_RU&amp;scroll=true"></script>
+            <div class="map-container position-relative">
+                <!-- КАРТА -->
+                <iframe id="ymap"
+                    src="https://yandex.ru/map-widget/v1/?um=constructor%3A31f6f7c70ac997c95b16ced668ab360f516a85f98f3acf5faa0d309c72e1099f&amp;source=constructor"
+                    width="100%" height="100%" frameborder="0"
+                    style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:2;">
+                </iframe>
+
+                <!-- Фолбэк-картинка -->
+                <img id="mapFallback" src="/vpf-pwa-web/assets/img/map-fallback.png" alt="Схема проезда"
+                    style="width:100%; height:100%; object-fit: cover; display:none; position:absolute; top:0; left:0; z-index:1;" />
             </div>
         </div>
 
@@ -194,6 +202,45 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const ymap = document.getElementById('ymap');
+            const fallback = document.getElementById('mapFallback');
+
+            const timeout = setTimeout(() => {
+                console.warn('[Карта] Превышен таймаут ожидания ответа. Показываем fallback.');
+                showFallback();
+            }, 5000);
+
+            fetch('https://yandex.ru/favicon.ico', {
+                method: 'HEAD',
+                mode: 'no-cors',
+                cache: 'no-store'
+            })
+                .then(() => {
+                    clearTimeout(timeout);
+                    console.info('[Карта] Доступ к yandex.ru есть. Показываем карту.');
+                    showMap();
+                })
+                .catch(() => {
+                    clearTimeout(timeout);
+                    console.warn('[Карта] Ошибка при проверке доступа к yandex.ru. Показываем fallback.');
+                    showFallback();
+                });
+
+            function showMap() {
+                ymap.style.display = 'block';
+                fallback.style.display = 'none';
+            }
+
+            function showFallback() {
+                ymap.style.display = 'none';
+                fallback.style.display = 'block';
+            }
+        });
+    </script>
+
 </body>
 
 </html>

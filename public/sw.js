@@ -1,5 +1,5 @@
 // Service Worker для VPF-PWA-Web
-const staticCacheName = 'vpf-cache-v12';
+const staticCacheName = 'vpf-cache-v15';
 
 const assetUrls = [
     '/vpf-pwa-web/',
@@ -16,7 +16,8 @@ const assetUrls = [
     '/vpf-pwa-web/data/schedule.json',
     '/vpf-pwa-web/data/speakers.json',
     '/vpf-pwa-web/assets/img/full-logo.png',
-    '/vpf-pwa-web/assets/img/logo.png'
+    '/vpf-pwa-web/assets/img/logo.png',
+    '/vpf-pwa-web/assets/img/map-fallback.png'
 ];
 
 self.addEventListener('install', event => {
