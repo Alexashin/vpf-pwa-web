@@ -1,1 +1,93 @@
-<!-- Страница с расписанием. Будет заполняться данными из schedule.json. -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Расписание мероприятий</title>
+
+  <link rel="stylesheet" href="src/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="src/css/dataTables.bootstrap5.min.css" />
+  <link rel="stylesheet" href="src/css/style.css" />
+</head>
+<body>
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Расписание мероприятий</h1>
+    <table id="schedule-table" class="table table-striped table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Дата</th>
+          <th>Время</th>
+          <th>Название мероприятия</th>
+          <th>Место</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>23.09.2025</td>
+          <td>10:00–12:00</td>
+          <td>Индустриальные инновации: вектор развития сквозных технологий.</td>
+          <td>Большой зал</td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>10:00–12:00</td>
+          <td>Индустриальная кооперация: интеграция решений</td>
+          <td>Малый зал</td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>10:00–12:00</td>
+          <td>Беспилотные авиационные системы – региональный аспект</td>
+          <td>Деловая площадка 3</td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>10:00–12:00</td>
+          <td>Цифра-сессия</td>
+          <td>Деловая площадка 4</td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>12:00</td>
+          <td>Торжественное открытие XV ЮБИЛЕЙНОГО  Воронежского Промышленного Форума<br>Пленарное заседание  «ПРОМЫШЛЕННОСТЬ  СЕГОДНЯ:  новые  точки  развития  и  роста»<br>Награждение победителей конкурса «Лучшее  промышленное предприятие 2024 года»</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>13:00-14:00</td>
+          <td>Перерыв<br>Нетворкинг<br>Работала тематических площадок</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>14:00–16:30</td>
+          <td>Современные решения для оптимизации бизнес-процессов</td>
+          <td>Большой зал</td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>14:00–16:30</td>
+          <td>Промышленность России: траектория развития сквозь национальные проекты</td>
+          <td>Малый зал</td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>14:00–16:30</td>
+          <td>Международная кооперация в индустриальном секторе</td>
+          <td>Деловая площадка 3</td>
+        </tr>
+        <tr>
+          <td>23.09.2025</td>
+          <td>14:00–16:30</td>
+          <td>Площадка-презентация "Откроем промышленность! межрегиональные практика развития промышленного туризма"</td>
+          <td>Деловая площадка 4</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  
+  <script src="src/js/jquery.min.js"></script>
+  <script src="src/js/jquery.dataTables.min.js"></script>
+  <script src="src/js/dataTables.bootstrap5.min.js"></script>
+  <script src="src/js/scripts.js"></script>

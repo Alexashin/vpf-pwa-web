@@ -16,5 +16,27 @@ function toggleContent(button) {
     } else {
         content.style.maxHeight = null;
         content.classList.remove('open');
-    }
+    }  
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const ruLang = {
+    search: "Поиск:",
+    lengthMenu: "Показать _MENU_ записей",
+    info: "Показано с _START_ по _END_ из _TOTAL_ записей",
+    paginate: {
+      first: "Первая",
+      last: "Последняя",
+      next: "След.",
+      previous: "Пред."
+    },
+    zeroRecords: "Ничего не найдено",
+    infoEmpty: "Нет доступных записей",
+    infoFiltered: "(отфильтровано из _MAX_ записей)"
+    };
+
+    $('#schedule-table').DataTable({
+      language: ruLang,
+      order: [[0, 'asc'], [1, 'asc']] 
+    });
+});
