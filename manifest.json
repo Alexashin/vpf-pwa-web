@@ -49,7 +49,7 @@
     }
   ],
   "theme_color": "#0e2e61",
-  "background_color": "#e6e6e6",
+  "background_color": "#0e2e61",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
