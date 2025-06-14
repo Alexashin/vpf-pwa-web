@@ -11,9 +11,12 @@ const assetUrls = [
     '/vpf-pwa-web/location.html',
     '/vpf-pwa-web/contacts.html',
     '/vpf-pwa-web/manifest.json',
-    '/vpf-pwa-web/data/program.json',
-    '/vpf-pwa-web/assets/screenshots/desktop.png',
-    '/vpf-pwa-web/assets/screenshots/mobile.png'
+    '/vpf-pwa-web/data/location.json',
+    '/vpf-pwa-web/data/partnes.json',
+    '/vpf-pwa-web/data/schedule.json',
+    '/vpf-pwa-web/data/speakers.json',
+    '/vpf-pwa-web/assets/img/full-logo.png',
+    '/vpf-pwa-web/assets/img/logo.png'
 ];
 
 self.addEventListener('install', event => {
