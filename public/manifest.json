@@ -39,6 +39,22 @@
       "type": "image/png"
     }
   ],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/mobile.png",
+      "sizes": "374x817",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Home screen showing main page"
+    },
+    {
+      "src": "assets/screenshots/desktop.png",
+      "sizes": "1384x558",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Home screen showing main page"
+    }
+  ],
   "theme_color": "#0e2e61",
   "background_color": "#e6e6e6",
   "display": "standalone",

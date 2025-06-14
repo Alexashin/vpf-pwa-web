@@ -24,7 +24,7 @@ body {
 
 @media (max-width: 767.98px) {
     .tile-accent {
-    background: linear-gradient(135deg, #0e2e61 0%, #11407e 100%);
+        background: linear-gradient(135deg, #0e2e61 0%, #11407e 100%);
     }
 }
 
