@@ -13,7 +13,6 @@ export default defineConfig({
                 map: resolve(__dirname, 'map.html'),
                 location: resolve(__dirname, 'location.html'),
                 contacts: resolve(__dirname, 'contacts.html'),
-                help: resolve(__dirname, 'help.html'),
             }
         }
     }

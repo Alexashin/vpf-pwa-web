@@ -91,7 +91,7 @@
     <script>
         async function loadProgramData() {
             try {
-                const response = await fetch('/vpf-pwa-web/data/program.json');
+                const response = await fetch('/vpf-pwa-web/data/schedule.json');
                 const data = await response.json();
                 renderProgram(data.events);
             } catch (error) {
