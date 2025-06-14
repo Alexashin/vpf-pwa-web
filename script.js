@@ -43,4 +43,58 @@ function renderProgram(events) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', loadProgramData);        
+
+
+async function loadTransferData() {
+    try {
+        const response = await fetch('/vpf-pwa-web/data/location.json');
+        const data = await response.json();
+        renderTransfer(data.transfer);
+    } catch (error) {
+        console.error('Ошибка загрузки JSON:', error);
+        document.getElementById('transferContainer').innerHTML =
+            '<div class="text-danger">Не удалось загрузить информацию о трансфере</div>';
+    }
+}
+
+function renderTransfer(transferData) {
+    const container = document.getElementById('transferContainer');
+
+    if (!transferData || !transferData.buses || transferData.buses.length === 0) {
+        container.innerHTML = '<div class="text-muted">Информация о трансфере будет доступна позже</div>';
+        return;
+    }
+
+    let html = '<div class="mb-4"><strong>Автобусы:</strong>';
+
+    // Информация об автобусах
+    transferData.buses.forEach(bus => {
+        html += `
+            <div class="bus-info">
+                ${bus.number} автобус ${bus.model} (${bus.seats} мест) - ${bus.plate}
+            </div>
+        `;
+    });
+
+    html += '</div>';
+
+    // Точки отправления
+    html += '<div><strong>Точки отправления:</strong>';
+
+    transferData.points.forEach(point => {
+        html += `
+            <div class="point-item">
+                <div class="point-title">${point.name}</div>
+                <div class="point-time">Время отправления: ${point.time}</div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+
+    container.innerHTML = html;
+}
+document.addEventListener('DOMContentLoaded', () => {
+    loadProgramData(); 
+    loadTransferData();
+});        
