@@ -1,5 +1,5 @@
 // Service Worker для VPF-PWA-Web
-const staticCacheName = 'vpf-cache-v16';
+const staticCacheName = 'vpf-cache-v18';
 
 const assetUrls = [
     '/vpf-pwa-web/',
