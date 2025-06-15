@@ -71,6 +71,26 @@
             margin-top: 10px;
         }
 
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box;
+            left: 0 !important;
+            right: 0 !important;
+            padding: 0.25rem 0;
+            margin: 0;
+            border-radius: 0 0 0.375rem 0.375rem;
+        }
+
+        .dropdown-toggle {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
     </style>
 </head>
 
@@ -84,9 +104,9 @@
             <h1 class="mb-0 text-center flex-grow-1">Расписание</h1>
             <div style="width: 70px;"></div>
         </div>
-        <div class="row mb-3">
+        <div class="mb-3">
             <div class="dropdown w-100">
-                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-outline-primary dropdown-toggle w-100 mb-3" type="button" data-bs-toggle="dropdown" data-bs-display="static" data-bs-offset="0,0" aria-expanded="false">
                     <span id="filterLabel">Фильтрация: Все залы</span>
                 </button>
                 <ul class="dropdown-menu w-100 mb-3" id="filterDropdown">
