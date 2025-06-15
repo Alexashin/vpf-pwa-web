@@ -1,5 +1,6 @@
 //schedule
 let originalEvents = [];
+let currentSort = 'timeAsc';
 
 async function loadProgramData() {
     try {
@@ -14,7 +15,7 @@ async function loadProgramData() {
 }
 
 function setupControls() {
-    const filterSelect = document.getElementById('filterSelect');
+    const sortBtn = document.getElementById('sortToggleBtn');
     const sortSelect = document.getElementById('sortSelect');
     const filterDropdown = document.getElementById('filterDropdown');
 
@@ -31,8 +32,12 @@ function setupControls() {
         });
     }
 
-    if (sortSelect) {
-        sortSelect.addEventListener('change', renderFilteredAndSorted);
+    if (sortBtn) {
+        sortBtn.addEventListener('click', () => {
+            currentSort = currentSort === 'timeAsc' ? 'timeDesc' : 'timeAsc';
+            sortBtn.textContent = 'Сортировка: ' + (currentSort === 'timeAsc' ? 'Время ↑' : 'Время ↓');
+            renderFilteredAndSorted();
+        });
     }
 }
 
@@ -49,10 +54,9 @@ function renderFilteredAndSorted() {
     }
 
     // Сортировка по времени
-    const sortValue = sortSelect?.value;
-    if (sortValue === 'timeAsc') {
+    if (currentSort === 'timeAsc') {
         events.sort((a, b) => a.time.localeCompare(b.time));
-    } else if (sortValue === 'timeDesc') {
+    } else if (currentSort === 'timeDesc') {
         events.sort((a, b) => b.time.localeCompare(a.time));
     }
 

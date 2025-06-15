@@ -70,6 +70,7 @@
         .btn-toggle {
             margin-top: 10px;
         }
+
     </style>
 </head>
 
@@ -84,24 +85,21 @@
             <div style="width: 70px;"></div>
         </div>
         <div class="row mb-3">
-            <div class="dropdown mb-3">
+            <div class="dropdown w-100">
                 <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span id="filterLabel">Фильтрация: Все залы</span>
                 </button>
-                <ul class="dropdown-menu w-100" id="filterDropdown">
+                <ul class="dropdown-menu w-100 mb-3" id="filterDropdown">
                     <li><a class="dropdown-item" href="#" data-value="">Все залы</a></li>
                     <li><a class="dropdown-item" href="#" data-value="Большой зал">Большой зал</a></li>
                     <li><a class="dropdown-item" href="#" data-value="Малый зал">Малый зал</a></li>
-                    <li><a class="dropdown-item" href="#" data-value="Деловая площадка 3">Деловая площадка 3</a></li>
-                    <li><a class="dropdown-item" href="#" data-value="Деловая площадка 4">Деловая площадка 4</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="Фойе, площадки">Фойе, площадки</a></li>
                 </ul>
             </div>
-            <div class="col-md-6">
-                <label for="sortSelect" class="form-label">Сортировка по времени:</label>
-                <select id="sortSelect" class="form-select">
-                    <option value="timeAsc">Время ↑</option>
-                    <option value="timeDesc">Время ↓</option>
-                </select>
+            <div class="dropdown mb-3">
+                <button id="sortToggleBtn" class="btn btn-outline-primary w-100">
+                    Сортировка: Время ↑
+                </button>
             </div>
         </div>
         <!-- Контейнер для карточек -->
