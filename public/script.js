@@ -1,12 +1,62 @@
 //schedule
+let originalEvents = [];
+
 async function loadProgramData() {
     try {
         const response = await fetch('/vpf-pwa-web/data/schedule.json');
         const data = await response.json();
-        renderProgram(data.events);
+        originalEvents = data.events;
+        renderFilteredAndSorted(); // отрисовываем с учётом фильтров
+        setupControls(); // навешиваем слушатели
     } catch (error) {
         console.error('Ошибка загрузки JSON:', error);
     }
+}
+
+function setupControls() {
+    const filterSelect = document.getElementById('filterSelect');
+    const sortSelect = document.getElementById('sortSelect');
+    const filterDropdown = document.getElementById('filterDropdown');
+
+    if (filterDropdown && filterLabel) {
+        filterDropdown.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const value = item.getAttribute('data-value');
+                const text = item.textContent;
+                filterLabel.textContent = 'Фильтрация: ' + text;
+                filterLabel.dataset.value = value;
+                renderFilteredAndSorted();
+            });
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', renderFilteredAndSorted);
+    }
+}
+
+function renderFilteredAndSorted() {
+    const filterSelect = document.getElementById('filterSelect');
+    const sortSelect = document.getElementById('sortSelect');
+
+    let events = [...originalEvents];
+
+    // Фильтрация по залу
+    const filterValue = document.getElementById('filterLabel')?.dataset.value || '';
+    if (filterValue) {
+        events = events.filter(event => event.location === filterValue);
+    }
+
+    // Сортировка по времени
+    const sortValue = sortSelect?.value;
+    if (sortValue === 'timeAsc') {
+        events.sort((a, b) => a.time.localeCompare(b.time));
+    } else if (sortValue === 'timeDesc') {
+        events.sort((a, b) => b.time.localeCompare(a.time));
+    }
+
+    renderProgram(events);
 }
 
 function renderProgram(events) {

@@ -83,7 +83,27 @@
             <h1 class="mb-0 text-center flex-grow-1">Расписание</h1>
             <div style="width: 70px;"></div>
         </div>
-
+        <div class="row mb-3">
+            <div class="dropdown mb-3">
+                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="filterLabel">Фильтрация: Все залы</span>
+                </button>
+                <ul class="dropdown-menu w-100" id="filterDropdown">
+                    <li><a class="dropdown-item" href="#" data-value="">Все залы</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="Большой зал">Большой зал</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="Малый зал">Малый зал</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="Деловая площадка 3">Деловая площадка 3</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="Деловая площадка 4">Деловая площадка 4</a></li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <label for="sortSelect" class="form-label">Сортировка по времени:</label>
+                <select id="sortSelect" class="form-select">
+                    <option value="timeAsc">Время ↑</option>
+                    <option value="timeDesc">Время ↓</option>
+                </select>
+            </div>
+        </div>
         <!-- Контейнер для карточек -->
         <div id="programContainer"></div>
     </div>
