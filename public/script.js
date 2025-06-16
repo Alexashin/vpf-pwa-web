@@ -267,8 +267,83 @@ async function loadContacts() {
     }
 }
 
+//map
+
+async function loadMapData() {
+    try {
+        const response = await fetch('/vpf-pwa-web/data/map.json');
+        if (!response.ok) throw new Error('Ошибка загрузки');
+        const data = await response.json();
+
+        const hallsContainer = document.getElementById('hallsContainer');
+        hallsContainer.innerHTML = data.halls.map(hall => {
+            const hasScheme = hall.scheme && hall.scheme !== "";
+
+            return `
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="hall-card">
+                        <div class="hall-img" style="background-image: url('${hall.image}')"
+                             ${hasScheme ? `onclick="toggleScheme(${hall.id})"` : ''}></div>
+                        <div class="hall-info">
+                            <h4 class="hall-title">${hall.name}</h4>
+                            <div class="hall-capacity">
+                                <i class="bi bi-people"></i> Вместимость: до ${hall.capacity} чел.
+                            </div>
+                            <p>${hall.description}</p>
+                            ${hasScheme ?
+                    `<button class="btn btn-details visible w-100" onclick="toggleScheme(${hall.id}, event)">
+                                    <i class="bi bi-chevron-down"></i> Подробнее
+                                </button>` :
+                    `<div class="no-scheme">Схема зала отсутствует</div>`
+                }
+                        </div>
+                        ${hasScheme ? `
+                        <div class="hall-scheme" id="scheme-${hall.id}">
+                            <div class="text-center mt-2">
+                                <h5>Схема зала</h5>
+                                <img src="${hall.scheme}" alt="Схема ${hall.name}" class="scheme-img">
+                            </div>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('floorPlanImage').src = data.floor_plan;
+
+    } catch (error) {
+        console.error('Ошибка:', error);
+        document.getElementById('hallsContainer').innerHTML = `
+            <div class="col-12 text-center py-4">
+                <div class="alert alert-danger">
+                    Не удалось загрузить данные. Пожалуйста, попробуйте позже.
+                </div>
+            </div>`;
+    }
+}
+
+function toggleScheme(hallId, event) {
+    if (event) event.stopPropagation();
+    const scheme = document.getElementById(`scheme-${hallId}`);
+    if (!scheme) return;
+
+    scheme.classList.toggle('active');
+
+    const btn = scheme.previousElementSibling.querySelector('button');
+    const icon = btn.querySelector('i');
+
+    if (scheme.classList.contains('active')) {
+        icon.classList.remove('bi-chevron-down');
+        icon.classList.add('bi-chevron-up');
+    } else {
+        icon.classList.remove('bi-chevron-up');
+        icon.classList.add('bi-chevron-down');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     loadProgramData(); 
     loadTransferData();
     loadContacts();
+    loadMapData();
 });        
