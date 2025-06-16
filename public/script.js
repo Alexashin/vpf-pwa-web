@@ -234,7 +234,7 @@ async function loadContacts() {
                             </div>
                             ` : ''}
 
-                            <a href="${contact.button.link}" class="btn btn-contact">
+                            <a href="${contact.button.link}" class="btn btn-contact"></a> 
                         </div>
                     </div>
                 `;
