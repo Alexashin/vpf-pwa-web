@@ -1,0 +1,10 @@
+.link-card {
+  background-color: #f1f5ff;
+  border-left: 5px solid #0e2e61;
+  border-radius: 0.5rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.link-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}

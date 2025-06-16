@@ -1,0 +1,113 @@
+/* contacts.css — стили страницы контактов */
+
+.contact-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contact-title {
+  font-weight: 700;
+  color: #0e2e61;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.contact-text {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.contact-info {
+  margin-bottom: 1.5rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.contact-icon {
+  color: #0e2e61;
+  margin-right: 15px;
+  font-size: 1.2rem;
+  min-width: 24px;
+}
+
+.contact-details {
+  flex: 1;
+}
+
+.contact-name {
+  font-weight: 600;
+  color: #0e2e61;
+}
+
+.contact-phone {
+  color: #333;
+}
+
+.contact-email {
+  margin-top: 1.5rem;
+  font-weight: 600;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  color: #0e2e61;
+  text-align: center;
+}
+
+.btn-contact {
+  background-color: #0e2e61;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  width: 100%;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1.5rem;
+}
+
+.btn-contact:hover {
+  background-color: #1a4b9b;
+  color: white;
+}
+
+.register-section {
+  margin-top: 30px;
+}
+
+.register-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.register-title {
+  font-weight: 700;
+  color: #0e2e61;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .contact-card,
+  .register-card {
+    padding: 20px;
+  }
+
+  .contact-title {
+    font-size: 1.3rem;
+  }
+}
