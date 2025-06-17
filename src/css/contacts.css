@@ -71,7 +71,6 @@
   transition: all 0.3s;
   width: 100%;
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 1.5rem;
 }
@@ -102,6 +101,7 @@
 }
 
 @media (max-width: 768px) {
+
   .contact-card,
   .register-card {
     padding: 20px;
