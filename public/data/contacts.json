@@ -52,7 +52,7 @@
             "title": "УЧАСТИЕ В ФОРУМЕ",
             "description": "",
             "button": {
-                "text": "ЗАРЕГИСТРИРОВАТЬСЯ НА ФОРУМ",
+                "text": "Зарегистрироваться на форум",
                 "link": "http://promforum36.ru/"
             },
             "isRegistrationCard": true

@@ -234,7 +234,9 @@ async function loadContacts() {
                             </div>
                             ` : ''}
 
-                            <a href="${contact.button.link}" class="btn btn-contact"></a> 
+                            <a href="${contact.button.link}" class="btn btn-contact">
+                                ${contact.button.text}
+                            </a> 
                         </div>
                     </div>
                 `;
@@ -266,6 +268,9 @@ async function loadContacts() {
                 </div>`;
     }
 }
+
+// Загружаем контакты при загрузке страницы
+document.addEventListener('DOMContentLoaded', loadContacts);
 
 //map
 
