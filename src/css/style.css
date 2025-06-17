@@ -1,50 +1,64 @@
 /* Основные стили всего приложения. Подключается на каждой странице. */
 body {
-    background-color: #f7f7f7;
-    color: #fff;
-    min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.section {
+  padding: 1.5rem 1rem;
+}
+
+.back-button-fixed {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.9rem;
+  color: #0e2e61;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.back-button-fixed:hover {
+  background-color: #e6e6e6;
+}
+
+@media (max-width: 576px) {
+  .back-button-label {
+    display: none;
+  }
+  .back-button i {
+    margin-right: 0 !important;
+  }
+}
+
+
+.btn-primary {
+  background-color: #0e2e61;
+  border-color: #0e2e61;
+}
+
+.btn-primary:hover {
+  background-color: #091a3b;
+  border-color: #091a3b;
 }
 
 .bg-primary-custom {
-    background: linear-gradient(135deg, #0e2e61 0%, #11407e 100%);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #0e2e61 0%, #11407e 100%);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  color: #fff;
 }
 
-.tile {
-    background: linear-gradient(145deg, #0e2e61 0%, #1951a3 50%, #0e2e61 100%);
-    border-radius: 1rem;
-    padding: 0.5rem;
-    min-height: 10rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-@media (max-width: 767.98px) {
-    .tile-accent {
-        background: linear-gradient(135deg, #0e2e61 0%, #11407e 100%);
-    }
-}
-
-.tile:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-
-.tile-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: #ffffff;
-}
-
-.tile-text {
-    font-size: 1.1rem;
-    color: #ffffff;
-}
-
-h1 {
-    font-weight: 600;
-    color: #0e2e61;
-}

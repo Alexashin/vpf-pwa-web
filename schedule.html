@@ -9,90 +9,50 @@
     <link rel="manifest" href="/vpf-pwa-web/manifest.json">
     <link rel="icon" type="image/png" href="/vpf-pwa-web/assets/img/logo.png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-    <style>
-        body {
-            background-color: #f7f7f7;
-        }
-
-        .back-button-fixed {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 999;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 0.3rem 0.6rem;
-            font-size: 0.9rem;
-            color: #0e2e61;
-            text-decoration: none;
-            transition: background-color 0.2s;
-        }
-
-        .back-button-fixed:hover {
-            background-color: #e6e6e6;
-        }
-
-        .program-section {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            color: #0e2e61;
-            font-weight: bold;
-        }
-
-        .section-time {
-            font-size: 1rem;
-            color: #6c757d;
-        }
-
-        .section-location {
-            font-size: 0.95rem;
-            color: #888;
-            margin-bottom: 10px;
-        }
-
-        .section-topic,
-        .section-speaker {
-            margin: 4px 0;
-        }
-
-        .section-speaker {
-            font-style: italic;
-        }
-
-        .btn-toggle {
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="/src/css/style.css">
+    <link rel="stylesheet" href="/src/css/schedule.css">
 </head>
 
 <body>
-    <div class="container py-4">
-        <!-- Назад + Заголовок на одном уровне -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="/vpf-pwa-web/index.html" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Назад
-            </a>
-            <h1 class="mb-0 text-center flex-grow-1">Расписание</h1>
-            <div style="width: 70px;"></div>
+<!-- Хэдер -->
+<header class="bg-primary-custom shadow-custom py-3 sticky-top">
+  <div class="container position-relative">
+    <!-- Кнопка Назад -->
+    <a href="/vpf-pwa-web/index.html"
+       class="btn btn-outline-light btn-sm back-button position-absolute start-0 top-50 translate-middle-y ms-3">
+      <i class="bi bi-arrow-left me-1"></i>
+      <span class="back-button-label">Назад</span>
+    </a>
+    <!-- Заголовок по центру -->
+    <h1 class="page-title text-white m-0 text-center">Расписание</h1>
+  </div>
+</header>
+<div class="container py-4">
+    <!-- Фильтрация -->
+    <div class="mb-3">
+        <div class="dropdown w-100">
+            <button class="btn btn-outline-primary dropdown-toggle w-100 mb-3" type="button" data-bs-toggle="dropdown" data-bs-display="static" data-bs-offset="0,0" aria-expanded="false">
+                <span id="filterLabel">Фильтрация: Все залы</span>
+            </button>
+            <ul class="dropdown-menu w-100 mb-3" id="filterDropdown">
+                <li><a class="dropdown-item" href="#" data-value="">Все залы</a></li>
+                <li><a class="dropdown-item" href="#" data-value="Большой зал">Большой зал</a></li>
+                <li><a class="dropdown-item" href="#" data-value="Малый зал">Малый зал</a></li>
+                <li><a class="dropdown-item" href="#" data-value="Фойе, площадки">Фойе, площадки</a></li>
+            </ul>
         </div>
-
-        <!-- Контейнер для карточек -->
-        <div id="programContainer"></div>
+        <div class="dropdown mb-3">
+            <button id="sortToggleBtn" class="btn btn-outline-primary w-100">
+                Сортировка: Время ↑
+            </button>
+        </div>
     </div>
+    <!-- Контейнер для карточек -->
+    <div id="programContainer"></div>
+</div>
 
-    <!-- Скрипты -->
-    <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
+  <!-- Скрипты -->
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

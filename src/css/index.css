@@ -1,0 +1,33 @@
+.tile {
+  background: linear-gradient(145deg, #0e2e61 0%, #1951a3 50%, #0e2e61 100%);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  min-height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (max-width: 767.98px) {
+  .tile-accent {
+    background: linear-gradient(135deg, #0e2e61 0%, #11407e 100%);
+  }
+}
+
+.tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tile-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.tile-text {
+  font-size: 1.1rem;
+  color: #ffffff;
+}

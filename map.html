@@ -9,145 +9,28 @@
     <link rel="manifest" href="/vpf-pwa-web/manifest.json">
     <link rel="icon" type="image/png" href="/vpf-pwa-web/assets/img/logo.png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-    <style>
-        body {
-            background-color: #f7f7f7;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .header {
-            background-color: #0e2e61;
-            color: white;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-        }
-
-        .hall-section {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: #0e2e61;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .hall-card {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-            margin-bottom: 20px;
-            background: white;
-            border: none;
-        }
-
-        .hall-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-
-        .hall-img {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            background-color: #f8f9fa;
-            cursor: pointer;
-        }
-
-        .hall-info {
-            padding: 1.5rem;
-        }
-
-        .hall-title {
-            font-weight: 700;
-            color: #0e2e61;
-            margin-bottom: 0.5rem;
-        }
-
-        .hall-capacity {
-            color: #6c757d;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .btn-details {
-            background-color: #0e2e61;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            transition: all 0.3s;
-            display: none;
-            /* Скрываем по умолчанию */
-        }
-
-        .btn-details.visible {
-            display: block;
-            /* Показываем только для залов со схемой */
-        }
-
-        .btn-details:hover {
-            background-color: #1a4b9b;
-        }
-
-        .hall-scheme {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-            background-color: #f8f9fa;
-            border-radius: 0 0 10px 10px;
-        }
-
-        .hall-scheme.active {
-            max-height: 1000px;
-            padding: 15px;
-        }
-
-        .scheme-img {
-            width: 100%;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .floor-plan-container {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .floor-plan-img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .no-scheme {
-            color: #6c757d;
-            font-style: italic;
-            font-size: 0.9rem;
-        }
-    </style>
+    <link rel="stylesheet" href="/src/css/style.css">
+    <link rel="styleindex" href="/src/css/map.css">
 </head>
 
 <body>
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="/vpf-pwa-web/index.html" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Назад
-            </a>
-            <h1 class="mb-0 text-center flex-grow-1">Схема выставки</h1>
-            <div style="width: 70px;"></div>
-        </div>
+<!-- Хэдер -->
+<header class="bg-primary-custom shadow-custom py-3 sticky-top">
+  <div class="container position-relative">
+    <!-- Кнопка Назад -->
+    <a href="/vpf-pwa-web/index.html"
+       class="btn btn-outline-light btn-sm back-button position-absolute start-0 top-50 translate-middle-y ms-3">
+      <i class="bi bi-arrow-left me-1"></i>
+      <span class="back-button-label">Назад</span>
+    </a>
+    <!-- Заголовок по центру -->
+    <h1 class="page-title text-white m-0 text-center">Схема выставки</h1>
+  </div>
+</header>
 
+
+
+    <div class="container py-4">
         <div class="hall-section">
             <div class="section-title">Залы выставки</div>
             <div class="row" id="hallsContainer">
@@ -163,83 +46,7 @@
         </div>
     </div>
 
-    <script>
-        async function loadMapData() {
-            try {
-                const response = await fetch('/vpf-pwa-web/data/map.json');
-                if (!response.ok) throw new Error('Ошибка загрузки');
-                const data = await response.json();
-
-                const hallsContainer = document.getElementById('hallsContainer');
-                hallsContainer.innerHTML = data.halls.map(hall => {
-                    const hasScheme = hall.scheme && hall.scheme !== "";
-
-                    return `
-                        <div class="col-md-6 col-lg-3 mb-4">
-                            <div class="hall-card">
-                                <div class="hall-img" style="background-image: url('${hall.image}')"
-                                     ${hasScheme ? `onclick="toggleScheme(${hall.id})"` : ''}></div>
-                                <div class="hall-info">
-                                    <h4 class="hall-title">${hall.name}</h4>
-                                    <div class="hall-capacity">
-                                        <i class="bi bi-people"></i> Вместимость: до ${hall.capacity} чел.
-                                    </div>
-                                    <p>${hall.description}</p>
-                                    ${hasScheme ?
-                            `<button class="btn btn-details visible w-100" onclick="toggleScheme(${hall.id}, event)">
-                                            <i class="bi bi-chevron-down"></i> Подробнее
-                                        </button>` :
-                            `<div class="no-scheme">Схема зала отсутствует</div>`
-                        }
-                                </div>
-                                ${hasScheme ? `
-                                <div class="hall-scheme" id="scheme-${hall.id}">
-                                    <div class="text-center mt-2">
-                                        <h5>Схема зала</h5>
-                                        <img src="${hall.scheme}" alt="Схема ${hall.name}" class="scheme-img">
-                                    </div>
-                                </div>` : ''}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-                document.getElementById('floorPlanImage').src = data.floor_plan;
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                document.getElementById('hallsContainer').innerHTML = `
-                    <div class="col-12 text-center py-4">
-                        <div class="alert alert-danger">
-                            Не удалось загрузить данные. Пожалуйста, попробуйте позже.
-                        </div>
-                    </div>`;
-            }
-        }
-
-        function toggleScheme(hallId, event) {
-            if (event) event.stopPropagation();
-            const scheme = document.getElementById(`scheme-${hallId}`);
-            if (!scheme) return;
-
-            scheme.classList.toggle('active');
-
-            const btn = scheme.previousElementSibling.querySelector('button');
-            const icon = btn.querySelector('i');
-
-            if (scheme.classList.contains('active')) {
-                icon.classList.remove('bi-chevron-down');
-                icon.classList.add('bi-chevron-up');
-            } else {
-                icon.classList.remove('bi-chevron-up');
-                icon.classList.add('bi-chevron-down');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadMapData);
-    </script>
-
+    <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
