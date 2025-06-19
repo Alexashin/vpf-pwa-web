@@ -6,31 +6,73 @@
     {
       "src": "/vpf-pwa-web/assets/icons/appicon-32x32.png",
       "sizes": "32x32",
+      "purpose": "maskable",
       "type": "image/png"
     },
     {
       "src": "/vpf-pwa-web/assets/icons/appicon-48x48.png",
       "sizes": "48x48",
+      "purpose": "maskable",
       "type": "image/png"
     },
     {
       "src": "/vpf-pwa-web/assets/icons/appicon-64x64.png",
       "sizes": "64x64",
+      "purpose": "maskable",
       "type": "image/png"
     },
     {
       "src": "/vpf-pwa-web/assets/icons/appicon-128x128.png",
       "sizes": "128x128",
+      "purpose": "maskable",
       "type": "image/png"
     },
     {
       "src": "/vpf-pwa-web/assets/icons/appicon-256x256.png",
       "sizes": "256x256",
+      "purpose": "maskable",
       "type": "image/png"
     },
     {
       "src": "/vpf-pwa-web/assets/icons/appicon-1024x1024.png",
       "sizes": "1024x1024",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/vpf-pwa-web/assets/icons/appicon-rounded-32x32.png",
+      "sizes": "32x32",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/vpf-pwa-web/assets/icons/appicon-rounded-48x48.png",
+      "sizes": "48x48",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/vpf-pwa-web/assets/icons/appicon-rounded-64x64.png",
+      "sizes": "64x64",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/vpf-pwa-web/assets/icons/appicon-rounded-128x128.png",
+      "sizes": "128x128",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/vpf-pwa-web/assets/icons/appicon-rounded-256x256.png",
+      "sizes": "256x256",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/vpf-pwa-web/assets/icons/appicon-rounded-1024x1024.png",
+      "sizes": "1024x1024",
+      "purpose": "any",
       "type": "image/png"
     }
   ],
@@ -53,5 +95,6 @@
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
-  "start_url": "/vpf-pwa-web/"
+  "start_url": "/vpf-pwa-web/",
+  "lang": "ru-RU"
 }

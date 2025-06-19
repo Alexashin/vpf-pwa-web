@@ -14,6 +14,20 @@ async function loadProgramData() {
     }
 }
 
+function toggleFilterMenu() {
+    const dropdown = document.getElementById('filterDropdown');
+    dropdown.classList.toggle('show');
+}
+
+function selectFilter(event, value) {
+    event.preventDefault();
+    const label = document.getElementById('filterLabel');
+    label.textContent = 'Фильтрация: ' + (value || 'Все залы');
+    label.dataset.value = value;
+    document.getElementById('filterDropdown').classList.remove('show');
+    renderFilteredAndSorted();
+}
+
 function setupControls() {
     const sortBtn = document.getElementById('sortToggleBtn');
     const sortSelect = document.getElementById('sortSelect');
@@ -69,8 +83,6 @@ function renderProgram(events) {
     container.innerHTML = '';
 
     events.forEach((event, index) => {
-        const div = document.createElement('div');
-        div.className = 'program-section';
         const collapseId = `collapse-${index}`;
 
         const topics = event.topics?.map(t => `<li class="section-topic">${t}</li>`).join('') || '';
@@ -78,26 +90,51 @@ function renderProgram(events) {
             `<li class="section-speaker">${s.name}${s.topic ? ` — ${s.topic}` : ''}${s.position ? ` (${s.position})` : ''}</li>`
         ).join('') || '';
 
-        div.innerHTML = `
-    <div class="section-time">${event.time}</div>
-    <div class="section-title">${event.title}</div>
-    <div class="section-location">${event.location || ''}</div>
+        const cardHTML = `
+            <div class="program-section">
+                <div class="section-time">${event.time || ''}</div>
+                <div class="section-title">${event.title || ''}</div>
+                <div class="section-location">${event.location || ''}</div>
 
-    <button class="btn btn-outline-primary btn-sm btn-toggle" type="button"
-        data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false"
-        aria-controls="${collapseId}">
-        Подробнее
-    </button>
+                <button class="btn btn-details visible" onclick="toggleCollapse(${index}, event)">
+                    <i class="bi bi-chevron-down"></i> Подробнее
+                </button>
 
-    <div class="collapse mt-3" id="${collapseId}">
-        ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
-        ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
-    </div>
-`;
+                <div class="collapse-box" id="${collapseId}">
+                    ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
+                    ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
+                </div>
+            </div>
+        `;
 
-        container.appendChild(div);
+        container.insertAdjacentHTML('beforeend', cardHTML);
     });
 }
+
+
+
+function toggleCollapse(index, event) {
+    if (event) event.stopPropagation();
+
+    const box = document.getElementById(`collapse-${index}`);
+    if (!box) return;
+
+    box.classList.toggle('active');
+
+    const btn = box.previousElementSibling;
+    const icon = btn.querySelector('i');
+
+    if (box.classList.contains('active')) {
+        icon.classList.remove('bi-chevron-down');
+        icon.classList.add('bi-chevron-up');
+    } else {
+        icon.classList.remove('bi-chevron-up');
+        icon.classList.add('bi-chevron-down');
+    }
+}
+
+
+
 
 
 //location
@@ -350,4 +387,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTransferData();
     loadContacts();
     loadMapData();
-});        
+});
