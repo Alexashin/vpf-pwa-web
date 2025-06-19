@@ -1,5 +1,5 @@
 // Service Worker для VPF-PWA-Web
-const staticCacheName = 'vpf-cache-v12';
+const staticCacheName = 'vpf-cache-v24';
 
 const assetUrls = [
     '/vpf-pwa-web/',
@@ -10,13 +10,22 @@ const assetUrls = [
     '/vpf-pwa-web/map.html',
     '/vpf-pwa-web/location.html',
     '/vpf-pwa-web/contacts.html',
+    '/vpf-pwa-web/script.js',
     '/vpf-pwa-web/manifest.json',
     '/vpf-pwa-web/data/location.json',
     '/vpf-pwa-web/data/partnes.json',
     '/vpf-pwa-web/data/schedule.json',
+    '/vpf-pwa-web/data/contacts.json',
     '/vpf-pwa-web/data/speakers.json',
+    '/vpf-pwa-web/data/map.json',
     '/vpf-pwa-web/assets/img/full-logo.png',
-    '/vpf-pwa-web/assets/img/logo.png'
+    '/vpf-pwa-web/assets/img/logo.png',
+    '/vpf-pwa-web/assets/img/big-hall-pic.png',
+    '/vpf-pwa-web/assets/img/big-hall-schem.png',
+    '/vpf-pwa-web/assets/img/small-hall-pic.png',
+    '/vpf-pwa-web/assets/img/small-hall-schem.png',
+    '/vpf-pwa-web/assets/img/zal.png',
+    '/vpf-pwa-web/assets/img/map-fallback.png'
 ];
 
 self.addEventListener('install', event => {

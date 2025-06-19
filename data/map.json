@@ -1,0 +1,37 @@
+{
+    "halls": [
+        {
+            "id": 1,
+            "name": "Большой зал",
+            "capacity": 800,
+            "image": "/vpf-pwa-web/assets/img/big-hall-pic.png",
+            "scheme": "/vpf-pwa-web/assets/img/big-hall-schem.png",
+            "description": "Главный зал комплекса, оборудованный для проведения крупных мероприятий, конференций и пленарных заседаний."
+        },
+        {
+            "id": 2,
+            "name": "Малый зал",
+            "capacity": 170,
+            "image": "/vpf-pwa-web/assets/img/small-hall-pic.png",
+            "scheme": "/vpf-pwa-web/assets/img/small-hall-schem.png",
+            "description": "Камерное пространство для семинаров, круглых столов и презентаций."
+        },
+        {
+            "id": 3,
+            "name": "Деловая площадка 3",
+            "capacity": 100,
+            "image": "/vpf-pwa-web/assets/img/business_area3.jpg",
+            "scheme": "",
+            "description": "Площадка для бизнес-встреч, мастер-классов и рабочих сессий."
+        },
+        {
+            "id": 4,
+            "name": "Деловая площадка 4",
+            "capacity": 80,
+            "image": "/vpf-pwa-web/assets/img/business_area4.jpg",
+            "scheme": "",
+            "description": "Компактное пространство для переговоров и небольших рабочих групп."
+        }
+    ],
+    "floor_plan": "/vpf-pwa-web/assets/img/zal.png"
+}
