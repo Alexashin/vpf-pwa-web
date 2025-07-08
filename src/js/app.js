@@ -1,6 +1,6 @@
 // app.js
 // Регистрирует Service Worker для PWA
-
+// apk
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker
