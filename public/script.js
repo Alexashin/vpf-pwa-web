@@ -383,8 +383,8 @@ function toggleScheme(hallId, event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadProgramData();
-    loadTransferData();
-    loadContacts();
-    loadMapData();
+    if (document.getElementById('programContainer')) loadProgramData();
+    if (document.getElementById('transferContainer')) loadTransferData();
+    if (document.getElementById('contactsContainer')) loadContacts();
+    if (document.getElementById('hallsContainer')) loadMapData();
 });
