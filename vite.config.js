@@ -13,6 +13,9 @@ export default defineConfig({
                 map: resolve(__dirname, 'map.html'),
                 location: resolve(__dirname, 'location.html'),
                 contacts: resolve(__dirname, 'contacts.html'),
+                organizers: resolve(__dirname, 'organizers.html'),
+                program: resolve(__dirname, 'program.html'),
+                participants: resolve(__dirname, 'participants.html')
             }
         }
     }

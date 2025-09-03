@@ -4,6 +4,9 @@ const staticCacheName = 'vpf-cache-v25';
 const assetUrls = [
     '/vpf-pwa-web/',
     '/vpf-pwa-web/index.html',
+    '/vpf-pwa-web/participants.html',
+    '/vpf-pwa-web/program.html',
+    '/vpf-pwa-web/organizers.html',
     '/vpf-pwa-web/about.html',
     '/vpf-pwa-web/schedule.html',
     '/vpf-pwa-web/partners.html',
