@@ -28,31 +28,6 @@
         </div>
     </header>
     <div class="container py-4">
-        <!-- Фильтрация -->
-        <div class="filter-buttons mb-4">
-            <!-- Кнопка фильтрации -->
-            <div class="mb-3">
-                <button class="btn btn-details visible w-100" onclick="toggleFilterMenu()">
-                    <span id="filterLabel" data-value="">Фильтрация: Все залы</span>
-                </button>
-                <ul class="filter-menu" id="filterDropdown">
-                    <li><a href="#" class="filter-option" onclick="selectFilter(event, '')">Все залы</a></li>
-                    <li><a href="#" class="filter-option" onclick="selectFilter(event, 'Большой зал')">Большой зал</a>
-                    </li>
-                    <li><a href="#" class="filter-option" onclick="selectFilter(event, 'Малый зал')">Малый зал</a></li>
-                    <li><a href="#" class="filter-option" onclick="selectFilter(event, 'Фойе, площадки')">Фойе,
-                            площадки</a></li>
-                </ul>
-            </div>
-
-            <!-- Кнопка сортировки -->
-            <div>
-                <button id="sortToggleBtn" class="btn btn-details visible w-100">
-                    </i> Сортировка: Время ↑
-                </button>
-            </div>
-        </div>
-
         <!-- Контейнер для карточек -->
         <div id="programContainer"></div>
     </div>

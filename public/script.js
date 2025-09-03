@@ -1,80 +1,15 @@
 //schedule
 let originalEvents = [];
-let currentSort = 'timeAsc';
 
 async function loadProgramData() {
     try {
         const response = await fetch('/vpf-pwa-web/data/schedule.json');
         const data = await response.json();
         originalEvents = data.events;
-        renderFilteredAndSorted(); // отрисовываем с учётом фильтров
-        setupControls(); // навешиваем слушатели
+        renderProgram(originalEvents);
     } catch (error) {
         console.error('Ошибка загрузки JSON:', error);
     }
-}
-
-function toggleFilterMenu() {
-    const dropdown = document.getElementById('filterDropdown');
-    dropdown.classList.toggle('show');
-}
-
-function selectFilter(event, value) {
-    event.preventDefault();
-    const label = document.getElementById('filterLabel');
-    label.textContent = 'Фильтрация: ' + (value || 'Все залы');
-    label.dataset.value = value;
-    document.getElementById('filterDropdown').classList.remove('show');
-    renderFilteredAndSorted();
-}
-
-function setupControls() {
-    const sortBtn = document.getElementById('sortToggleBtn');
-    const sortSelect = document.getElementById('sortSelect');
-    const filterDropdown = document.getElementById('filterDropdown');
-
-    if (filterDropdown && filterLabel) {
-        filterDropdown.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const value = item.getAttribute('data-value');
-                const text = item.textContent;
-                filterLabel.textContent = 'Фильтрация: ' + text;
-                filterLabel.dataset.value = value;
-                renderFilteredAndSorted();
-            });
-        });
-    }
-
-    if (sortBtn) {
-        sortBtn.addEventListener('click', () => {
-            currentSort = currentSort === 'timeAsc' ? 'timeDesc' : 'timeAsc';
-            sortBtn.textContent = 'Сортировка: ' + (currentSort === 'timeAsc' ? 'Время ↑' : 'Время ↓');
-            renderFilteredAndSorted();
-        });
-    }
-}
-
-function renderFilteredAndSorted() {
-    const filterSelect = document.getElementById('filterSelect');
-    const sortSelect = document.getElementById('sortSelect');
-
-    let events = [...originalEvents];
-
-    // Фильтрация по залу
-    const filterValue = document.getElementById('filterLabel')?.dataset.value || '';
-    if (filterValue) {
-        events = events.filter(event => event.location === filterValue);
-    }
-
-    // Сортировка по времени
-    if (currentSort === 'timeAsc') {
-        events.sort((a, b) => a.time.localeCompare(b.time));
-    } else if (currentSort === 'timeDesc') {
-        events.sort((a, b) => b.time.localeCompare(a.time));
-    }
-
-    renderProgram(events);
 }
 
 function renderProgram(events) {
@@ -96,9 +31,14 @@ function renderProgram(events) {
                 <div class="section-title">${event.title || ''}</div>
                 <div class="section-location">${event.location || ''}</div>
 
-                <button class="btn btn-details visible" onclick="toggleCollapse(${index}, event)">
-                    <i class="bi bi-chevron-down"></i> Подробнее
-                </button>
+                <div class="buttons-container">
+                    <button class="btn btn-details" onclick="toggleCollapse(${index}, event)">
+                        <i class="bi bi-chevron-down"></i> Подробнее
+                    </button>
+                    <button class="btn btn-remove" onclick="removeFromFavorites(${index}, event)">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
 
                 <div class="collapse-box" id="${collapseId}">
                     ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
@@ -111,8 +51,6 @@ function renderProgram(events) {
     });
 }
 
-
-
 function toggleCollapse(index, event) {
     if (event) event.stopPropagation();
 
@@ -121,7 +59,7 @@ function toggleCollapse(index, event) {
 
     box.classList.toggle('active');
 
-    const btn = box.previousElementSibling;
+    const btn = box.previousElementSibling.querySelector('.btn-details');
     const icon = btn.querySelector('i');
 
     if (box.classList.contains('active')) {
@@ -133,6 +71,27 @@ function toggleCollapse(index, event) {
     }
 }
 
+function removeFromFavorites(index, event) {
+    if (event) event.stopPropagation();
+
+    // Удаляем мероприятие из избранного
+    if (confirm('Удалить это мероприятие из избранного?')) {
+        // Здесь должна быть логика удаления из избранного
+        // Например, удаление из localStorage или отправка на сервер
+        console.log('Удаляем мероприятие из избранного:', originalEvents[index]);
+
+        // Удаляем карточку из DOM
+        const container = document.getElementById('programContainer');
+        const card = container.children[index];
+        if (card) {
+            card.style.opacity = '0';
+            card.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+                card.remove();
+            }, 300);
+        }
+    }
+}
 
 
 
