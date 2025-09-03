@@ -41,7 +41,9 @@
   background-color: #0e2e61;
   opacity: 0.5;
 }
+
 @media (max-width: 575.98px) {
+
   .section-title-with-lines::before,
   .section-title-with-lines::after {
     display: none;
@@ -57,8 +59,8 @@
     max-height: 100px;
     max-width: 160px;
   }
-
 }
+
 .partner-link {
   display: inline-block;
   transition: transform 0.25s ease;
