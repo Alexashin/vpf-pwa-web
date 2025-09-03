@@ -1,5 +1,5 @@
 .tile {
-  background: linear-gradient(145deg, #0e2e61 0%, #1951a3 50%, #0e2e61 100%);
+  background: #14188F;
   border-radius: 1rem;
   padding: 0.5rem;
   min-height: 10rem;
@@ -8,12 +8,6 @@
   justify-content: center;
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-@media (max-width: 767.98px) {
-  .tile-accent {
-    background: linear-gradient(135deg, #0e2e61 0%, #11407e 100%);
-  }
 }
 
 .tile:hover {
