@@ -1,9 +1,9 @@
-# .github/workflows/parse-build-deploy-pages.yml
-name: Parse → Build → Deploy (GitHub Pages)
+# .github/workflows/parse-build-deploy-ghpages.yml
+name: Parse → Build → Deploy (gh-pages)
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '0 */3 * * *'   # каждые 3 часа по UTC
   workflow_dispatch:
 
 concurrency:
@@ -11,19 +11,16 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write   # коммитить data
-  pages: write      # деплоить на Pages
-  id-token: write   # OIDC для Pages
+  contents: write   # коммитить data + пушить gh-pages
 
 jobs:
-  parse:
+  parse_build_deploy:
     runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.diff.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
 
+      # === PARSE ===
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
 
@@ -57,13 +54,7 @@ jobs:
           git commit -m "data: auto-update $(date -u +'%F %T')"
           git push
 
-  build:
-    needs: parse
-    if: needs.parse.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
+      # === BUILD ===
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -72,17 +63,9 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      # === DEPLOY ===
+      # твой скрипт: "deploy": "gh-pages -d dist"
+      - name: Deploy to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run deploy
