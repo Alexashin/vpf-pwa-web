@@ -455,4 +455,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('transferContainer')) loadTransferData();
     if (document.getElementById('contactsContainer')) loadContacts();
     if (document.getElementById('hallsContainer')) loadMapData();
+
+    ensureFirstRunProfile();
 });
