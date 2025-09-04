@@ -1,46 +1,46 @@
 /* === MIN STORAGE + PROFILE (NO MODULES) === */
 (function () {
     const KV = {
-        get(k, fb=null){ try{ return JSON.parse(localStorage.getItem(k)) ?? fb; }catch{ return fb; } },
-        set(k, v){ localStorage.setItem(k, JSON.stringify(v)); },
-        del(k){ localStorage.removeItem(k); }
+        get(k, fb = null) { try { return JSON.parse(localStorage.getItem(k)) ?? fb; } catch { return fb; } },
+        set(k, v) { localStorage.setItem(k, JSON.stringify(v)); },
+        del(k) { localStorage.removeItem(k); }
     };
 
     const Fav = {
         key: 'vpf:favs',
-        all(){ return new Set(KV.get(this.key, [])); },
-        has(id){ return this.all().has(String(id)); },
-        add(id){ const s=this.all(); s.add(String(id)); KV.set(this.key,[...s]); },
-        remove(id){ const s=this.all(); s.delete(String(id)); KV.set(this.key,[...s]); },
-        toggle(id){ const key=String(id); const s=this.all(); const on=!s.has(key); on?s.add(key):s.delete(key); KV.set(this.key,[...s]); return on; }
+        all() { return new Set(KV.get(this.key, [])); },
+        has(id) { return this.all().has(String(id)); },
+        add(id) { const s = this.all(); s.add(String(id)); KV.set(this.key, [...s]); },
+        remove(id) { const s = this.all(); s.delete(String(id)); KV.set(this.key, [...s]); },
+        toggle(id) { const key = String(id); const s = this.all(); const on = !s.has(key); on ? s.add(key) : s.delete(key); KV.set(this.key, [...s]); return on; }
     };
 
     const Profile = {
         key: 'vpf:profile',
-        get(){ return KV.get(this.key, null); },
-        save(obj){ KV.set(this.key, obj); },
-        clear(){ KV.del(this.key); }
+        get() { return KV.get(this.key, null); },
+        save(obj) { KV.set(this.key, obj); },
+        clear() { KV.del(this.key); }
     };
 
-  // глобально
+    // глобально
     window.Fav = Fav;
     window.Profile = Profile;
 
-  // Анкета первого входа: модал #firstRunModal + #firstRunForm, иначе prompt
+    // Анкета первого входа: модал #firstRunModal + #firstRunForm, иначе prompt
     window.ensureFirstRunProfile = function ensureFirstRunProfile() {
         if (window.Profile.get()) return;
         const el = document.getElementById('firstRunModal');
         if (el && window.bootstrap && bootstrap.Modal) {
-            const modal = new bootstrap.Modal(el, { backdrop:'static', keyboard:false });
+            const modal = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false });
             modal.show();
             const form = document.getElementById('firstRunForm');
             form?.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const fd = new FormData(form);
                 const data = {
-                    fullName: String(fd.get('fullName')||'').trim(),
-                    company: String(fd.get('company')||'').trim(),
-                    role: String(fd.get('role')||'').trim(),
+                    fullName: String(fd.get('fullName') || '').trim(),
+                    company: String(fd.get('company') || '').trim(),
+                    role: String(fd.get('role') || '').trim(),
                     consent: !!fd.get('consent')
                 };
                 if (!data.fullName) return;
@@ -49,32 +49,32 @@
             });
         } else {
             const name = (prompt('ФИО (минимум):') || '').trim();
-            if (name) window.Profile.save({ fullName: name, consent:false });
+            if (name) window.Profile.save({ fullName: name, consent: false });
         }
     };
 
     // Утилиты для работы с избранным в UI
-    window.getEventId = function getEventId(ev){
+    window.getEventId = function getEventId(ev) {
         if (ev && ev.id) return String(ev.id); // если есть id — используем его
         const d = (ev?.date || '').trim();
         const t = (ev?.time || '').trim();
         const ti = (ev?.title || '').trim();
         const loc = (ev?.location || '').trim();
-        return [d,t,ti,loc].join('|'); // без индекса
+        return [d, t, ti, loc].join('|'); // без индекса
     };
 
-    window.renderFavState = function renderFavState(btn, on){
+    window.renderFavState = function renderFavState(btn, on) {
         if (!btn) return;
         btn.classList.toggle('btn-primary', on);
         btn.classList.toggle('btn-outline-primary', !on);
         const icon = btn.querySelector('i') || btn.insertBefore(document.createElement('i'), btn.firstChild);
         icon.className = on ? 'bi bi-star-fill' : 'bi bi-star';
-        const label = btn.querySelector('.fav-label') || btn.appendChild(Object.assign(document.createElement('span'), {className:'fav-label'}));
+        const label = btn.querySelector('.fav-label') || btn.appendChild(Object.assign(document.createElement('span'), { className: 'fav-label' }));
         label.textContent = on ? ' В избранном' : ' В избранное';
         btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     };
 
-    window.toggleFavorite = function toggleFavorite(eventId, domEvt){
+    window.toggleFavorite = function toggleFavorite(eventId, domEvt) {
         domEvt?.stopPropagation?.();
         const on = window.Fav.toggle(eventId);
         const safeId = (window.CSS && CSS.escape) ? CSS.escape(eventId) : eventId;
@@ -153,9 +153,9 @@ function renderProgram(events) {
         ).join('') || '';
 
         const eid = getEventId(event);
-const isFav = window.Fav.has(eid);
+        const isFav = window.Fav.has(eid);
 
-const cardHTML = `
+        const cardHTML = `
     <div class="program-section">
         <div class="section-time">${event.time || ''}</div>
         <div class="section-title">${event.title || ''}</div>
@@ -298,6 +298,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 //contact
+// contact.js
 async function loadContacts() {
     try {
         const response = await fetch('/vpf-pwa-web/data/contacts.json');
@@ -306,75 +307,51 @@ async function loadContacts() {
 
         const container = document.getElementById('contactsContainer');
 
-        // Фильтруем контакты, оставляя только те, которые не являются карточкой регистрации
-        const regularContacts = data.contacts.filter(c => !c.isRegistrationCard);
-        const forumContact = data.contacts.find(c => c.isRegistrationCard);
-
-        // Рендерим основные контакты
-        container.innerHTML = regularContacts.map(contact => {
+        // Рендерим контакты для выставочной экспозиции
+        container.innerHTML = data.contacts.map(contact => {
             return `
-                    <div class="col-md-6 mb-4">
-                        <div class="contact-card">
-                            <h3 class="contact-title">${contact.title}</h3>
-                            ${contact.description ? `<p class="contact-text">${contact.description}</p>` : ''}
+                <div class="col-12">
+                    <div class="contact-card">
+                        <h3 class="contact-title">${contact.title}</h3>
 
-                            ${contact.phones ? `
-                            <div class="contact-info">
-                                ${contact.phones.map(phone => `
-                                    <div class="contact-item">
+                        ${contact.phones ? `
+                        <div class="contact-info">
+                            ${contact.phones.map(phone => `
+                                <div class="contact-item">
+                                    <div class="contact-phone-row">
                                         <div class="contact-icon">
                                             <i class="bi bi-telephone"></i>
                                         </div>
-                                        <div class="contact-details">
-                                            <div class="contact-phone">${phone.number}</div>
-                                            <div class="contact-name">${phone.person}</div>
-                                        </div>
+                                        <div class="contact-phone">${phone.number}</div>
                                     </div>
-                                `).join('')}
-                            </div>
-                            ` : ''}
-
-                            ${contact.email ? `
-                            <div class="contact-email">
-                                Также можно отправить запрос на почту:<br>
-                                <strong>${contact.email}</strong>
-                            </div>
-                            ` : ''}
-
-                            <a href="${contact.button.link}" class="btn btn-contact">
-                                ${contact.button.text}
-                            </a> 
+                                    <div class="contact-details">
+                                        <div class="contact-name">${phone.person}</div>
+                                        ${phone.email ? `
+                                        <div class="contact-email">${phone.email}</div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
                         </div>
+                        ` : ''}
                     </div>
-                `;
+                </div>
+            `;
         }).join('');
-
-        // Добавляем карточку регистрации отдельно внизу
-        if (forumContact) {
-            container.innerHTML += `
-                    <div class="col-12">
-                        <div class="register-section">
-                            <div class="register-card">
-                                <h3 class="register-title">${forumContact.title}</h3>
-                                <a href="${forumContact.button.link}" class="btn btn-contact">
-                                    ${forumContact.button.text}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-        }
 
     } catch (error) {
         console.error('Ошибка:', error);
         document.getElementById('contactsContainer').innerHTML = `
-                <div class="col-12 text-center py-4">
-                    <div class="alert alert-danger">
-                        Не удалось загрузить контакты. Пожалуйста, попробуйте позже.
-                    </div>
-                </div>`;
+            <div class="col-12 text-center py-4">
+                <div class="alert alert-danger">
+                    Не удалось загрузить контакты. Пожалуйста, попробуйте позже.
+                </div>
+            </div>`;
     }
 }
+
+// Загружаем контакты при загрузке страницы
+document.addEventListener('DOMContentLoaded', loadContacts);
 
 //map
 
