@@ -127,31 +127,39 @@ function renderProgram(events) {
             `<li class="section-speaker">${s.name}${s.topic ? ` — ${s.topic}` : ''}${s.position ? ` (${s.position})` : ''}</li>`
         ).join('') || '';
 
-        const cardHTML = `
-            <div class="program-section">
-                <div class="section-time">${event.time || ''}</div>
-                <div class="section-title">${event.title || ''}</div>
-                <div class="section-location">${event.location || ''}</div>
+        const eid = getEventId(event);
+const isFav = window.Fav.has(eid);
 
-                <div class="buttons-container">
-                    <button class="btn btn-details" onclick="toggleCollapse(${index}, event)">
-                        <i class="bi bi-chevron-down"></i> Подробнее
-                    </button>
-                    <button class="btn btn-remove" onclick="removeFromFavorites(${index}, event)">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </div>
+const cardHTML = `
+    <div class="program-section">
+        <div class="section-time">${event.time || ''}</div>
+        <div class="section-title">${event.title || ''}</div>
+        <div class="section-location">${event.location || ''}</div>
 
-                <div class="collapse-box" id="${collapseId}">
-                    ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
-                    ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
-                </div>
-            </div>
-        `;
+        <div class="buttons-container">
+            <button class="btn ${isFav ? 'btn-primary' : 'btn-outline-primary'} btn-fav"
+                    data-event-id="${eid}"
+                    onclick="toggleFavorite('${eid}', event)">
+                <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
+                <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
+            </button>
+
+            <button class="btn btn-details" onclick="toggleCollapse(${index}, event)">
+                <i class="bi bi-chevron-down"></i> Подробнее
+            </button>
+        </div>
+
+        <div class="collapse-box" id="${collapseId}">
+            ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
+            ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
+        </div>
+    </div>
+    `;
 
         container.insertAdjacentHTML('beforeend', cardHTML);
     });
 }
+
 
 function toggleCollapse(index, event) {
     if (event) event.stopPropagation();
