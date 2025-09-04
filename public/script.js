@@ -54,14 +54,13 @@
     };
 
     // Утилиты для работы с избранным в UI
-    window.getEventId = function getEventId(ev, idx){
-        // используем ev.id если есть; иначе строим стабильный ключ из полей
-        if (ev && ev.id) return String(ev.id);
+    window.getEventId = function getEventId(ev){
+        if (ev && ev.id) return String(ev.id); // если есть id — используем его
         const d = (ev?.date || '').trim();
         const t = (ev?.time || '').trim();
         const ti = (ev?.title || '').trim();
         const loc = (ev?.location || '').trim();
-        return [d,t,ti,loc,idx].join('|');
+        return [d,t,ti,loc].join('|'); // без индекса
     };
 
     window.renderFavState = function renderFavState(btn, on){
@@ -78,7 +77,8 @@
     window.toggleFavorite = function toggleFavorite(eventId, domEvt){
         domEvt?.stopPropagation?.();
         const on = window.Fav.toggle(eventId);
-        const btn = domEvt?.currentTarget || document.querySelector(`.btn-fav[data-event-id="${CSS.escape(eventId)}"]`);
+        const safeId = (window.CSS && CSS.escape) ? CSS.escape(eventId) : eventId;
+        const btn = domEvt?.currentTarget || document.querySelector(`.btn-fav[data-event-id="${safeId}"]`);
         renderFavState(btn, on);
     };
 
@@ -86,7 +86,7 @@
 
 function removeFromFavorites(index, domEvt) {
     domEvt?.stopPropagation?.();
-    const eid = getEventId(originalEvents[index], index);
+    const eid = getEventId(originalEvents[index]);
     if (!confirm('Удалить это мероприятие из избранного?')) return;
 
     window.Fav.remove(eid);
@@ -95,7 +95,7 @@ function removeFromFavorites(index, domEvt) {
     const card = container?.children[index];
     if (card) {
         card.style.opacity = '0';
-        ard.style.transition = 'opacity 0.3s ease';
+        card.style.transition = 'opacity 0.3s ease';
         setTimeout(() => { card.remove(); }, 300);
     }
 }
@@ -127,7 +127,7 @@ function renderProgram(events) {
             `<li class="section-speaker">${s.name}${s.topic ? ` — ${s.topic}` : ''}${s.position ? ` (${s.position})` : ''}</li>`
         ).join('') || '';
 
-        const eid = getEventId(event, index);
+        const eid = getEventId(event);
 const isFav = window.Fav.has(eid);
 
 const cardHTML = `
@@ -451,7 +451,9 @@ function toggleScheme(hallId, event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('programContainer')) loadProgramData();
+    if (document.getElementById('programContainer') && !window.MY_SCHEDULE_ONLY) {
+        loadProgramData();
+    }
     if (document.getElementById('transferContainer')) loadTransferData();
     if (document.getElementById('contactsContainer')) loadContacts();
     if (document.getElementById('hallsContainer')) loadMapData();
