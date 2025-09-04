@@ -114,6 +114,31 @@ async function loadProgramData() {
     }
 }
 
+async function loadMyProgramData() {
+    try {
+        const resp = await fetch('/vpf-pwa-web/data/schedule.json');
+        const data = await resp.json();
+        const all = Array.isArray(data.events) ? data.events : [];
+
+        const favSet = new Set(JSON.parse(localStorage.getItem('vpf:favs') || '[]'));
+        const filtered = all.filter(ev => favSet.has(getEventId(ev)));
+
+        // чтобы индексы в UI соответствовали текущему списку
+        originalEvents = filtered;
+
+        const container = document.getElementById('programContainer');
+        if (!filtered.length) {
+            container.innerHTML = '<div class="text-muted">Пока пусто. Отметьте события звездой на странице программы.</div>';
+            return;
+        }
+        renderProgram(filtered);
+    } catch (e) {
+        console.error('Ошибка загрузки «Моей программы»:', e);
+        document.getElementById('programContainer').innerHTML =
+            '<div class="text-danger">Не удалось загрузить «Мою программу».</div>';
+    }
+}
+
 function renderProgram(events) {
     const container = document.getElementById('programContainer');
     if (!container) return;
@@ -181,32 +206,8 @@ function toggleCollapse(index, event) {
     }
 }
 
-function removeFromFavorites(index, event) {
-    if (event) event.stopPropagation();
-
-    // Удаляем мероприятие из избранного
-    if (confirm('Удалить это мероприятие из избранного?')) {
-        // Здесь должна быть логика удаления из избранного
-        // Например, удаление из localStorage или отправка на сервер
-        console.log('Удаляем мероприятие из избранного:', originalEvents[index]);
-
-        // Удаляем карточку из DOM
-        const container = document.getElementById('programContainer');
-        const card = container.children[index];
-        if (card) {
-            card.style.opacity = '0';
-            card.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => {
-                card.remove();
-            }, 300);
-        }
-    }
-}
-
-
-
-
 //location
+
 async function loadTransferData() {
     try {
         const response = await fetch('/vpf-pwa-web/data/location.json');
@@ -375,8 +376,6 @@ async function loadContacts() {
     }
 }
 
-
-
 //map
 
 async function loadMapData() {
@@ -452,8 +451,12 @@ function toggleScheme(hallId, event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('programContainer') && !window.MY_SCHEDULE_ONLY) {
-        loadProgramData();
+    if (document.getElementById('programContainer')) {
+        if (window.MY_SCHEDULE_ONLY) {
+            loadMyProgramData();      // << показываем только избранное
+        } else {
+            loadProgramData();        // обычная страница программы
+        }
     }
     if (document.getElementById('transferContainer')) loadTransferData();
     if (document.getElementById('contactsContainer')) loadContacts();

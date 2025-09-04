@@ -37,36 +37,6 @@
         <script src="script.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', async () => {
-            // устойчивый ID
-            window.getEventId = window.getEventId || function (ev) {
-                const d=(ev?.date||'').trim(), t=(ev?.time||'').trim(),
-                ti=(ev?.title||'').trim(), loc=(ev?.location||'').trim();
-                return [d,t,ti,loc].join('|');
-            };
-
-            try{
-                const resp = await fetch('/vpf-pwa-web/data/schedule.json');
-                const data = await resp.json();
-                const all = Array.isArray(data.events) ? data.events : [];
-                const favSet = new Set(JSON.parse(localStorage.getItem('vpf:favs') || '[]'));
-                const filtered = all.filter(ev => favSet.has(getEventId(ev)));
-                window.originalEvents = filtered;
-                const container = document.getElementById('programContainer');
-                if (!filtered.length) {
-                    container.innerHTML = '<div class="text-muted">Пока пусто. Отметьте события звездой на странице программы.</div>';
-                    return;
-                }
-                renderProgram(filtered);
-                } catch(e){
-                    console.error(e);
-                    document.getElementById('programContainer').innerHTML =
-                        '<div class="text-danger">Не удалось загрузить «Мою программу».</div>';
-                }
-            });
-        </script>
-
     </body>
 
     </html>
