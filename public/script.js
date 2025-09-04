@@ -1,11 +1,60 @@
-/* === MIN STORAGE + PROFILE (NO MODULES) === */
+/* === MIN STORAGE + PROFILE === */
 (function () {
+
+    function injectProfileModalIfMissing() {
+        if (document.getElementById('firstRunModal')) return true;
+
+        const tpl = document.createElement('template');
+        tpl.innerHTML = `
+            <div class="modal fade" id="firstRunModal" tabindex="-1" role="dialog" aria-modal="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <form class="modal-content" id="firstRunForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Короткая анкета</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">ФИО</label>
+                            <input type="text" class="form-control" name="fullName" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Организация (необязательно)</label>
+                            <input type="text" class="form-control" name="company" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Роль</label>
+                            <select class="form-select" name="role">
+                                <option value="">Не указывать</option>
+                                <option>Участник</option>
+                                <option>Спикер</option>
+                                <option>Организатор</option>
+                                <option>Гость</option>
+                            </select>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="consent" name="consent">
+                            <label class="form-check-label" for="consent">Согласие на обработку персональных данных</label>
+                        </div>
+                        <small class="text-muted d-block mt-2">Данные сохраняются только на вашем устройстве.</small>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>`;
+        document.body.appendChild(tpl.content.firstElementChild);
+        return true;
+    }
+    // Простое key-value хранилище
     const KV = {
         get(k, fb = null) { try { return JSON.parse(localStorage.getItem(k)) ?? fb; } catch { return fb; } },
         set(k, v) { localStorage.setItem(k, JSON.stringify(v)); },
         del(k) { localStorage.removeItem(k); }
     };
 
+    // Избранное
     const Fav = {
         key: 'vpf:favs',
         all() { return new Set(KV.get(this.key, [])); },
@@ -15,6 +64,7 @@
         toggle(id) { const key = String(id); const s = this.all(); const on = !s.has(key); on ? s.add(key) : s.delete(key); KV.set(this.key, [...s]); return on; }
     };
 
+    // Анкета
     const Profile = {
         key: 'vpf:profile',
         get() { return KV.get(this.key, null); },
@@ -82,6 +132,49 @@
         renderFavState(btn, on);
     };
 
+    // Анкета первого входа: неблокирующая, только через модал (никаких prompt)
+    window.ensureFirstRunProfile = function ensureFirstRunProfile() {
+        const prof = Profile.get();
+        const hasName = !!(prof && String(prof.fullName || '').trim());
+        if (hasName) return;
+
+        injectProfileModalIfMissing();
+        const el = document.getElementById('firstRunModal');
+        if (!(window.bootstrap && bootstrap.Modal) || !el) return;
+
+        if (el.classList.contains('show')) return; // уже открыт
+
+        requestAnimationFrame(() => {
+            const modal = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false });
+            // автофокус на поле
+            el.addEventListener('shown.bs.modal', () => {
+                el.querySelector('#firstRunFullName')?.focus();
+            }, { once: true });
+            // перед скрытием — убираем фокус, чтобы не было конфликта с aria-hidden
+            el.addEventListener('hide.bs.modal', () => {
+                if (document.activeElement && el.contains(document.activeElement)) {
+                    document.activeElement.blur();
+                }
+            });
+
+            modal.show();
+
+            const form = document.getElementById('firstRunForm');
+            form?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const fd = new FormData(form);
+                const data = {
+                    fullName: String(fd.get('fullName') || '').trim(),
+                    company: String(fd.get('company') || '').trim(),
+                    role: String(fd.get('role') || '').trim(),
+                    consent: !!fd.get('consent')
+                };
+                if (!data.fullName) return;
+                Profile.save(data);
+                bootstrap.Modal.getInstance(el)?.hide();
+            });
+        });
+    };
 })();
 
 function removeFromFavorites(index, domEvt) {
@@ -430,7 +523,7 @@ function toggleScheme(hallId, event) {
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('programContainer')) {
         if (window.MY_SCHEDULE_ONLY) {
-            loadMyProgramData();      // << показываем только избранное
+            loadMyProgramData();      // только избранное
         } else {
             loadProgramData();        // обычная страница программы
         }
@@ -438,6 +531,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('transferContainer')) loadTransferData();
     if (document.getElementById('contactsContainer')) loadContacts();
     if (document.getElementById('hallsContainer')) loadMapData();
-
-    ensureFirstRunProfile();
 });
+
+// window.addEventListener('load', () => { ВЕРНУТЬ ЧТОБЫ ОТОБРАЗИЛОСЬ ОКНО
+//     setTimeout(ensureFirstRunProfile, 0);
+// });
