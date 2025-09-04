@@ -1,3 +1,105 @@
+/* === MIN STORAGE + PROFILE (NO MODULES) === */
+(function () {
+    const KV = {
+        get(k, fb=null){ try{ return JSON.parse(localStorage.getItem(k)) ?? fb; }catch{ return fb; } },
+        set(k, v){ localStorage.setItem(k, JSON.stringify(v)); },
+        del(k){ localStorage.removeItem(k); }
+    };
+
+    const Fav = {
+        key: 'vpf:favs',
+        all(){ return new Set(KV.get(this.key, [])); },
+        has(id){ return this.all().has(String(id)); },
+        add(id){ const s=this.all(); s.add(String(id)); KV.set(this.key,[...s]); },
+        remove(id){ const s=this.all(); s.delete(String(id)); KV.set(this.key,[...s]); },
+        toggle(id){ const key=String(id); const s=this.all(); const on=!s.has(key); on?s.add(key):s.delete(key); KV.set(this.key,[...s]); return on; }
+    };
+
+    const Profile = {
+        key: 'vpf:profile',
+        get(){ return KV.get(this.key, null); },
+        save(obj){ KV.set(this.key, obj); },
+        clear(){ KV.del(this.key); }
+    };
+
+  // глобально
+    window.Fav = Fav;
+    window.Profile = Profile;
+
+  // Анкета первого входа: модал #firstRunModal + #firstRunForm, иначе prompt
+    window.ensureFirstRunProfile = function ensureFirstRunProfile() {
+        if (window.Profile.get()) return;
+        const el = document.getElementById('firstRunModal');
+        if (el && window.bootstrap && bootstrap.Modal) {
+            const modal = new bootstrap.Modal(el, { backdrop:'static', keyboard:false });
+            modal.show();
+            const form = document.getElementById('firstRunForm');
+            form?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const fd = new FormData(form);
+                const data = {
+                    fullName: String(fd.get('fullName')||'').trim(),
+                    company: String(fd.get('company')||'').trim(),
+                    role: String(fd.get('role')||'').trim(),
+                    consent: !!fd.get('consent')
+                };
+                if (!data.fullName) return;
+                window.Profile.save(data);
+                bootstrap.Modal.getInstance(el)?.hide();
+            });
+        } else {
+            const name = (prompt('ФИО (минимум):') || '').trim();
+            if (name) window.Profile.save({ fullName: name, consent:false });
+        }
+    };
+
+    // Утилиты для работы с избранным в UI
+    window.getEventId = function getEventId(ev){
+        if (ev && ev.id) return String(ev.id); // если есть id — используем его
+        const d = (ev?.date || '').trim();
+        const t = (ev?.time || '').trim();
+        const ti = (ev?.title || '').trim();
+        const loc = (ev?.location || '').trim();
+        return [d,t,ti,loc].join('|'); // без индекса
+    };
+
+    window.renderFavState = function renderFavState(btn, on){
+        if (!btn) return;
+        btn.classList.toggle('btn-primary', on);
+        btn.classList.toggle('btn-outline-primary', !on);
+        const icon = btn.querySelector('i') || btn.insertBefore(document.createElement('i'), btn.firstChild);
+        icon.className = on ? 'bi bi-star-fill' : 'bi bi-star';
+        const label = btn.querySelector('.fav-label') || btn.appendChild(Object.assign(document.createElement('span'), {className:'fav-label'}));
+        label.textContent = on ? ' В избранном' : ' В избранное';
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+
+    window.toggleFavorite = function toggleFavorite(eventId, domEvt){
+        domEvt?.stopPropagation?.();
+        const on = window.Fav.toggle(eventId);
+        const safeId = (window.CSS && CSS.escape) ? CSS.escape(eventId) : eventId;
+        const btn = domEvt?.currentTarget || document.querySelector(`.btn-fav[data-event-id="${safeId}"]`);
+        renderFavState(btn, on);
+    };
+
+})();
+
+function removeFromFavorites(index, domEvt) {
+    domEvt?.stopPropagation?.();
+    const eid = getEventId(originalEvents[index]);
+    if (!confirm('Удалить это мероприятие из избранного?')) return;
+
+    window.Fav.remove(eid);
+
+    const container = document.getElementById('programContainer');
+    const card = container?.children[index];
+    if (card) {
+        card.style.opacity = '0';
+        card.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => { card.remove(); }, 300);
+    }
+}
+
 //schedule
 let originalEvents = [];
 
@@ -25,31 +127,39 @@ function renderProgram(events) {
             `<li class="section-speaker">${s.name}${s.topic ? ` — ${s.topic}` : ''}${s.position ? ` (${s.position})` : ''}</li>`
         ).join('') || '';
 
-        const cardHTML = `
-            <div class="program-section">
-                <div class="section-time">${event.time || ''}</div>
-                <div class="section-title">${event.title || ''}</div>
-                <div class="section-location">${event.location || ''}</div>
+        const eid = getEventId(event);
+const isFav = window.Fav.has(eid);
 
-                <div class="buttons-container">
-                    <button class="btn btn-details" onclick="toggleCollapse(${index}, event)">
-                        <i class="bi bi-chevron-down"></i> Подробнее
-                    </button>
-                    <button class="btn btn-remove" onclick="removeFromFavorites(${index}, event)">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </div>
+const cardHTML = `
+    <div class="program-section">
+        <div class="section-time">${event.time || ''}</div>
+        <div class="section-title">${event.title || ''}</div>
+        <div class="section-location">${event.location || ''}</div>
 
-                <div class="collapse-box" id="${collapseId}">
-                    ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
-                    ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
-                </div>
-            </div>
-        `;
+        <div class="buttons-container">
+            <button class="btn ${isFav ? 'btn-primary' : 'btn-outline-primary'} btn-fav"
+                    data-event-id="${eid}"
+                    onclick="toggleFavorite('${eid}', event)">
+                <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
+                <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
+            </button>
+
+            <button class="btn btn-details" onclick="toggleCollapse(${index}, event)">
+                <i class="bi bi-chevron-down"></i> Подробнее
+            </button>
+        </div>
+
+        <div class="collapse-box" id="${collapseId}">
+            ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
+            ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
+        </div>
+    </div>
+    `;
 
         container.insertAdjacentHTML('beforeend', cardHTML);
     });
 }
+
 
 function toggleCollapse(index, event) {
     if (event) event.stopPropagation();
@@ -342,8 +452,12 @@ function toggleScheme(hallId, event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('programContainer')) loadProgramData();
+    if (document.getElementById('programContainer') && !window.MY_SCHEDULE_ONLY) {
+        loadProgramData();
+    }
     if (document.getElementById('transferContainer')) loadTransferData();
     if (document.getElementById('contactsContainer')) loadContacts();
     if (document.getElementById('hallsContainer')) loadMapData();
+
+    ensureFirstRunProfile();
 });
