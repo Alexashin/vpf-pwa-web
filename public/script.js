@@ -443,9 +443,6 @@ async function loadContacts() {
     }
 }
 
-// Загружаем контакты при загрузке страницы
-document.addEventListener('DOMContentLoaded', loadContacts);
-
 //map
 
 async function loadMapData() {
