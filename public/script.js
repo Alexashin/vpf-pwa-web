@@ -315,6 +315,139 @@ function toggleCollapse(collapseId, btnEl, evt) {
   }
 }
 
+
+
+
+// === РЕНДЕР ТОЛЬКО ДЛЯ СТРАНИЦЫ schedule ===
+/* ===== helpers ===== */
+function getEventId(ev){
+  // если у тебя уже есть своя реализация — оставь её
+  return ev.id ?? [ev.time, ev.title, ev.location].filter(Boolean).join('|');
+}
+const Fav = {
+  all(){ try{ return new Set(JSON.parse(localStorage.getItem('vpf:favs')||'[]')); }catch{ return new Set(); } },
+  has(id){ return this.all().has(String(id)); }
+};
+
+async function fetchJsonFallback(urls){
+  for (const u of urls){
+    try{
+      const r = await fetch(u, {cache:'no-store'});
+      if (!r.ok) continue;
+      return await r.json();
+    }catch(e){}
+  }
+  throw new Error('Не удалось загрузить JSON по всем путям');
+}
+
+/* ===== render ===== */
+function renderSchedule(events) {
+  const container = document.getElementById('scheduleContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  events.forEach((ev, index) => {
+    const eid = getEventId(ev);
+    const isFav = window.Fav?.has(eid);
+    const collapseId = `schedule-collapse-${index}`;
+
+    const topicsBlock = Array.isArray(ev.topics) && ev.topics.length
+      ? `<div class="ev-block"><div class="ev-block-title">Темы:</div>${ev.topics.map(t => `<div class="ev-line">${t}</div>`).join('')}</div>` : '';
+
+    const speakersBlock = Array.isArray(ev.speakers) && ev.speakers.length
+      ? `<div class="ev-block"><div class="ev-block-title">Спикеры:</div>${
+          ev.speakers.map(s => {
+            const parts = [s.name || '', s.topic ? ` — ${s.topic}` : '', s.position ? ` (${s.position})` : ''];
+            return `<div class="ev-line">${parts.join('')}</div>`;
+          }).join('')
+        }</div>` : '';
+
+    const details = `
+      ${ev.description ? `<div class="ev-block"><div class="ev-line">${ev.description}</div></div>` : ''}
+      ${topicsBlock}
+      ${speakersBlock}
+    `;
+
+    const cardHTML = `
+      <section class="program-card">
+        <div class="ev-time">${ev.time || ''}</div>
+        <div class="ev-hall">${ev.location || ''}</div>
+
+        <div class="ev-title">${ev.title || ''}</div>
+
+        <div class="buttons-container">
+          <button class="btn-program btn-fav ${isFav ? '' : 'btn-program--ghost'}"
+                  data-event-id="${eid}"
+                  onclick="toggleFavorite('${eid}', event)">
+            <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
+            <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
+          </button>
+
+          <button class="btn-program btn-program--ghost btn-details"
+                  onclick="toggleCollapse('${collapseId}', this, event)">
+            <i class="bi bi-chevron-down"></i> Подробнее
+          </button>
+        </div>
+
+        <div class="collapse-box" id="${collapseId}">
+          ${details}
+        </div>
+      </section>
+    `;
+
+    container.insertAdjacentHTML('beforeend', cardHTML);
+  });
+}
+
+/* ===== toggle ===== */
+function toggleCollapse(collapseId, btnEl, evt){
+  if (evt) evt.stopPropagation();
+  const box = document.getElementById(collapseId);
+  if (!box) return;
+  box.classList.toggle('active');
+  const icon = btnEl.querySelector('i');
+  if (!icon) return;
+  if (box.classList.contains('active')){
+    icon.classList.replace('bi-chevron-down','bi-chevron-up');
+  }else{
+    icon.classList.replace('bi-chevron-up','bi-chevron-down');
+  }
+}
+
+/* ===== load only favorites for schedule ===== */
+async function loadScheduleData(){
+  try{
+    const data = await fetchJsonFallback([
+      '/vpf-pwa-web/data/schedule.json',
+      'data/schedule.json',
+      './data/schedule.json'
+    ]);
+    const all = Array.isArray(data?.events) ? data.events : [];
+    const fav = Fav.all();
+    const list = all.filter(ev => fav.has(getEventId(ev)));
+
+    const container = document.getElementById('scheduleContainer');
+    if (!list.length){
+      container.innerHTML = `
+        <div class="text-muted">
+          В избранном пусто. Отметьте интересующие события на странице «Программа».
+        </div>`;
+      return;
+    }
+    renderSchedule(list);
+  }catch(err){
+    console.error(err);
+    const container = document.getElementById('scheduleContainer');
+    if (container) container.innerHTML = `<div class="text-danger">Не удалось загрузить данные расписания.</div>`;
+  }
+}
+
+/* запуск после готовности DOM */
+document.addEventListener('DOMContentLoaded', loadScheduleData);
+
+
+
+
 //location
 
 async function loadTransferData() {

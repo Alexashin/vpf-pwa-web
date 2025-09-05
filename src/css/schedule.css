@@ -1,120 +1,157 @@
-.program-section {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative;
+/* =========================
+   SCHEDULE PAGE (clean)
+   — внешний вид сохранён —
+   ========================= */
+
+/* Контейнер списка */
+#scheduleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
 }
 
-.section-title {
-    font-size: 1.25rem;
-    color: #0e2e61;
-    font-weight: bold;
+/* --- Плитка события (белая карточка) --- */
+.program-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+  padding: 1.25rem 1.5rem;
+
+  /* Карточка — столбцом, т.к. у нас порядок: дата/место → заголовок → кнопки → скрытый блок */
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
 }
 
-.section-time {
-    font-size: 1rem;
-    color: #6c757d;
+/* Верхняя служебная часть (дата/время и место) */
+.ev-time {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #0e2e61;
+}
+.ev-hall {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #333;
+  opacity: .9;
 }
 
-.section-location {
-    font-size: 0.95rem;
-    color: #888;
-    margin-bottom: 10px;
+/* Заголовок события */
+.ev-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0e2e61;
+  margin-top: .25rem;
 }
 
-.section-topic,
-.section-speaker {
-    margin: 4px 0;
-}
-
-.section-speaker {
-    font-style: italic;
-}
-
-.btn-toggle {
-    margin-top: 10px;
-}
-
-.collapse-box {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, padding 0.3s ease;
-    padding: 0 0;
-}
-
-.collapse-box.active {
-    max-height: 5000px;
-    padding: 1rem 0;
-}
-
-.btn-remove {
-    background-color: #0e2e61;
-    color: white;
-    border: none;
-    width: 38px;
-    height: 38px;
-    border-radius: 5px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px;
-    transition: all 0.3s;
-}
-
-.btn-remove:hover {
-    background-color: #1a4b9b;
-    color: white;
-}
-
+/* --- Кнопки в один ряд --- */
 .buttons-container {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .5rem;
+  flex-wrap: wrap;
 }
 
-/* ЕДИНЫЙ СТИЛЬ КНОПОК ПРОГРАММЫ */
+/* Наша базовая кнопка (не трогаем bootstrap .btn) */
 .btn-program {
-  background-color: #0e2e61;
-  color: #fff;
-  border: 1px solid #0e2e61;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
   display: inline-flex;
   align-items: center;
-  gap: .35rem;            /* отступ между иконкой и текстом */
-  line-height: 1.25;
-  transition: background-color .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease;
+  gap: .35rem;
+
+  padding: .5rem .75rem;
+  border-radius: 10px;
+  border: 1px solid #0e2e61;
+
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
   text-decoration: none;
+
+  background: #0e2e61;
+  color: #fff;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .02s ease;
 }
+.btn-program i { margin-right: .25rem; }
 
-.btn-program:hover { background-color: #1a4b9b; color: #fff; border-color: #1a4b9b; }
-.btn-program:active { transform: translateY(0.5px); }
-
-.btn-program:focus-visible {
-  outline: 2px solid #1a4b9b;
-  outline-offset: 2px;
+.btn-program:hover {
+  background: #1a4b9b;
+  border-color: #1a4b9b;
+  color: #fff;
 }
+.btn-program:active { transform: translateY(.5px); }
+.btn-program:focus-visible { outline: 2px solid #4e77c5; outline-offset: 2px; }
 
-/* Модификатор «прозрачная» (как прежний outline) */
+/* Прозрачный вариант (Подробнее, пустая звезда на десктопе) */
 .btn-program--ghost {
   background: transparent;
   color: #0e2e61;
   border-color: #0e2e61;
 }
 .btn-program--ghost:hover {
-  background-color: #0e2e61;
+  background: #0e2e61;
   color: #fff;
 }
 
-/* Небольшой твик контейнера с кнопками — одинаковые промежутки и перенос */
-.buttons-container {
-  display: flex;
-  align-items: center;
-  gap: .5rem;      /* ДОБАВЛЕНО */
-  flex-wrap: wrap; /* ДОБАВЛЕНО */
-  margin-top: 10px;
+/* Кнопка «В избранное» (десктоп): фикс-ширина для аккуратного ряда */
+.btn-fav {
+  width: 160px;
+  justify-content: center;
 }
 
+/* --- Скрываемый блок «Подробнее» --- */
+.collapse-box {
+  display: none;
+  margin-top: .75rem;
+  animation: sch-fade-in .25s ease;
+}
+.collapse-box.active { display: block; }
 
+@keyframes sch-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Плоские инфо-блоки (без маркеров) */
+.ev-block { margin-top: .25rem; }
+.ev-block-title {
+  font-weight: 600;
+  color: #0e2e61;
+  margin-bottom: .125rem;
+}
+.ev-line {
+  font-size: 1.02rem;
+  line-height: 1.55;
+  padding: 2px 0;
+}
+
+/* --- Уважение системных настроек анимаций --- */
+@media (prefers-reduced-motion: reduce) {
+  .btn-program { transition: none; }
+  .collapse-box { animation: none; }
+}
+
+/* ============ Мобильная версия (≤576px) ============ */
+@media (max-width: 576px) {
+
+  .program-card {
+    padding: 1rem;
+  }
+
+  /* Верхний блок (дата/место + звезда справа) */
+  .program-top {
+    /* вспомогательная обёртка, если используешь; если нет — применяй к блоку, где рендеришь время/зал/звезду */
+    display: grid;
+    grid-template-columns: 1fr auto; /* слева время+зал, справа звезда */
+    align-items: center;
+    gap: .25rem;
+    margin-bottom: .5rem;
+  }
+
+  /* если нет .program-top — можно применять к контейнеру, где у тебя время/зал/звезда расположены вместе */
+  /* .program-left { ... } */
+
+  /* Звезда на мобилке — только иконка справа, без рамки/фона */
+}
