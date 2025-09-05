@@ -232,72 +232,87 @@ async function loadMyProgramData() {
     }
 }
 
+// === РЕНДЕР ТОЛЬКО ДЛЯ СТРАНИЦЫ program ===
 function renderProgram(events) {
-    const container = document.getElementById('programContainer');
-    if (!container) return;
-    container.innerHTML = '';
+  const container = document.getElementById('programContainer');
+  if (!container) return;
+  container.innerHTML = '';
 
-    events.forEach((event, index) => {
-        const collapseId = `collapse-${index}`;
+  events.forEach((ev, index) => {
+    const eid = getEventId(ev);
+    const isFav = window.Fav?.has(eid);
 
-        const topics = event.topics?.map(t => `<li class="section-topic">${t}</li>`).join('') || '';
-        const speakers = event.speakers?.map(s =>
-            `<li class="section-speaker">${s.name}${s.topic ? ` — ${s.topic}` : ''}${s.position ? ` (${s.position})` : ''}</li>`
-        ).join('') || '';
+    const topicsBlock = Array.isArray(ev.topics) && ev.topics.length
+      ? `
+        <div class="ev-block">
+          ${ev.topics.map(t => `<div class="ev-line">${t}</div>`).join('')}
+        </div>`
+      : '';
 
-        const eid = getEventId(event);
-        const isFav = window.Fav.has(eid);
+    const speakersBlock = Array.isArray(ev.speakers) && ev.speakers.length
+      ? `
+        <div class="ev-block">
+          <div class="ev-block-title">Спикеры:</div>
+          ${ev.speakers.map(s => {
+            const parts = [
+              s.name || '',
+              s.topic ? ` — ${s.topic}` : '',
+              s.position ? ` (${s.position})` : ''
+            ];
+            return `<div class="ev-line">${parts.join('')}</div>`;
+          }).join('')}
+        </div>`
+      : '';
 
-        const cardHTML = `
-  <div class="program-section">
-    <div class="section-time">${event.time || ''}</div>
-    <div class="section-title">${event.title || ''}</div>
-    <div class="section-location">${event.location || ''}</div>
-
-    <div class="buttons-container">
-      <button class="btn-program btn-fav ${isFav ? '' : 'btn-program--ghost'}"
-              data-event-id="${eid}"
-              onclick="toggleFavorite('${eid}', event)">
-        <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
-        <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
-      </button>
-
-      <button class="btn-program btn-program--ghost btn-details"
-              onclick="toggleCollapse(${index}, event)">
-        <i class="bi bi-chevron-down"></i> Подробнее
-      </button>
-    </div>
-
-    <div class="collapse-box" id="${collapseId}">
-      ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
-      ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
-    </div>
-  </div>
+    const details = `
+      ${ev.title ? `<div class="ev-title">${ev.title}</div>` : ''}
+      ${ev.description ? `<div class="ev-block"><div class="ev-line">${ev.description}</div></div>` : ''}
+      ${topicsBlock}
+      ${speakersBlock}
     `;
 
-        container.insertAdjacentHTML('beforeend', cardHTML);
-    });
+    const cardHTML = `
+      <section class="program-card">
+        <!-- Левая колонка -->
+        <div class="program-left">
+          <div class="ev-time">${ev.time || ''}</div>
+          <div class="ev-hall">${ev.location || ''}</div>
+
+          <button class="btn-program btn-fav ${isFav ? '' : 'btn-program--ghost'}"
+                  data-event-id="${eid}"
+                  onclick="toggleFavorite('${eid}', event)">
+            <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
+            <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
+          </button>
+        </div>
+
+        <!-- Правая колонка -->
+        <div class="program-right">
+          ${details}
+        </div>
+      </section>
+    `;
+
+    container.insertAdjacentHTML('beforeend', cardHTML);
+  });
 }
 
+// Универсальный (но простой) тогглер только для этой страницы
+function toggleCollapse(collapseId, btnEl, evt) {
+  if (evt) evt.stopPropagation();
+  const box = document.getElementById(collapseId);
+  if (!box) return;
+  box.classList.toggle('active');
 
-function toggleCollapse(index, event) {
-    if (event) event.stopPropagation();
-
-    const box = document.getElementById(`collapse-${index}`);
-    if (!box) return;
-
-    box.classList.toggle('active');
-
-    const btn = box.previousElementSibling.querySelector('.btn-details');
-    const icon = btn.querySelector('i');
-
-    if (box.classList.contains('active')) {
-        icon.classList.remove('bi-chevron-down');
-        icon.classList.add('bi-chevron-up');
-    } else {
-        icon.classList.remove('bi-chevron-up');
-        icon.classList.add('bi-chevron-down');
-    }
+  const icon = btnEl?.querySelector('i');
+  if (!icon) return;
+  if (box.classList.contains('active')) {
+    icon.classList.remove('bi-chevron-down');
+    icon.classList.add('bi-chevron-up');
+  } else {
+    icon.classList.remove('bi-chevron-up');
+    icon.classList.add('bi-chevron-down');
+  }
 }
 
 //location

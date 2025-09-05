@@ -1,0 +1,158 @@
+/* === Базовые === */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+
+
+/* На мобильных чуть меньше, чтобы влезало */
+@media (max-width: 576px) {
+  header .page-title {
+    font-size: 1.5rem;
+  }
+}
+
+.section{ padding:1.5rem 1rem; }
+
+/* Кнопка "назад" (если используется) */
+.back-button-fixed{
+  position:fixed; top:1rem; left:1rem; z-index:999;
+  background:rgba(255,255,255,.9);
+  border:1px solid #ccc; border-radius:6px;
+  padding:.3rem .6rem; font-size:.9rem; color:#0e2e61; text-decoration:none;
+  transition:background-color .2s;
+}
+.back-button-fixed:hover{ background:#e6e6e6; }
+@media (max-width:576px){
+  .back-button-label{ display:none; }
+  .back-button i{ margin-right:0!important; }
+}
+
+/* === Кнопки общие === */
+.btn-primary{ background:#0e2e61; border-color:#0e2e61; }
+.btn-primary:hover{ background:#091a3b; border-color:#091a3b; }
+
+.bg-primary-custom{
+  background:linear-gradient(135deg,#0e2e61 0%,#11407e 100%);
+  box-shadow:0 5px 10px rgba(0,0,0,.3);
+  color:#fff;
+}
+
+/* === Кнопки программы === */
+.btn-program{
+  background:#0e2e61; color:#fff;
+  border:1px solid #0e2e61;
+  font-weight:600; border-radius:10px;
+  padding:.5rem .75rem; display:inline-flex; align-items:center; gap:.35rem;
+  line-height:1.25;
+  transition:background-color .2s,color .2s,box-shadow .2s,border-color .2s;
+  text-decoration:none;
+}
+.btn-program:hover{ background:#1a4b9b; border-color:#1a4b9b; color:#fff; }
+.btn-program:active{ transform:translateY(.5px); }
+.btn-program:focus-visible{ outline:2px solid #1a4b9b; outline-offset:2px; }
+
+.btn-program--ghost{ background:transparent; color:#0e2e61; border-color:#0e2e61; }
+.btn-program--ghost:hover{ background:#0e2e61; color:#fff; }
+
+/* Контейнер кнопок */
+.buttons-container{ display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; margin-top:.5rem; }
+.btn-program i{ margin-right:.25rem; }
+
+/* === Контейнер списка программы === */
+#programContainer{ display:flex; flex-direction:column; gap:1.75rem; }
+
+/* === Элемент события (без карточек) ===
+   Десктоп: 2 колонки, больше промежуток и левый отступ */
+.program-card{
+  display:grid;
+  grid-template-columns: 400px 1fr; /* шире левая колонка */
+  column-gap: 2rem;                 /* БОЛЬШЕ расстояние между столбцами */
+  align-items:start;
+  padding-left: 16rem;               /* УВЕЛИЧЕН ЛЕВЫЙ ОТСТУП */
+  border:0; border-radius:0; box-shadow:none; background:transparent;
+}
+
+/* Левая колонка */
+.program-left{
+  display:flex; flex-direction:column; gap:.5rem;
+}
+.ev-time{ font-weight:700; font-size:1.5rem; color:#0e2e61; }
+.ev-hall{ font-weight:600; font-size:1.5rem; color:#334; opacity:.9; }
+
+/* Кнопка избранного (desktop) — фиксированная ширина под временем/залом */
+.program-left .btn-fav{
+  width:160px; justify-content:center; margin-top:.75rem;
+}
+
+/* Правая колонка */
+.program-right{ display:flex; flex-direction:column; gap:.5rem; }
+.ev-title{ font-size:1.8rem; font-weight:700; color:#0e2e61; }
+.ev-block{ margin-top:.25rem; }
+.ev-block-title{ font-weight:600; color:#0e2e61; margin-bottom:.125rem; }
+.ev-line{line-height:1.45; font-size: 1.3rem; padding:2px 0; }
+
+/* ==== Мобильная версия ==== */
+@media (max-width: 576px) {
+  .program-card {
+    display: block; /* вся карточка идёт сверху вниз */
+    padding-left: 0;
+  }
+
+  /* Левая колонка: время + зал слева, звезда справа */
+  .program-left {
+    display: grid;
+    grid-template-columns: 1fr auto; /* слева контент, справа иконка */
+    align-items: center;
+    gap: .25rem;
+    margin-bottom: .5rem;
+  }
+
+  .program-left .ev-time {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+
+  .program-left .ev-hall {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+  }
+
+  /* Звезда всегда справа */
+  .program-left .btn-fav {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;      /* занимает место по высоте времени и зала */
+    align-self: center;
+    justify-self: end;
+
+    width: auto;
+    border: none !important;
+    background: transparent !important;
+    padding: 0.25rem;
+    margin-top: 0;
+  }
+
+  .program-left .btn-fav .fav-label {
+    display: none; /* только иконка */
+  }
+
+  .program-left .btn-fav i {
+    font-size: 1.6rem;
+    color: #0e2e61;          /* пустая звезда */
+    transition: color .2s ease;
+  }
+
+  .program-left .btn-fav i.bi-star-fill {
+    color: #0e2e61;          /* закрашенная синяя */
+  }
+}
