@@ -90,3 +90,30 @@
     margin-bottom: 8px;
   }
 }
+
+
+body { padding-bottom: 72px; }
+
+.social-footer {
+  border-top: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(6px);
+}
+
+.social-links .social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;                
+  text-decoration: none;
+  color: #0e2e61;              
+}
+
+.icon-lg { font-size: 2.2rem; line-height: 1; }
+
+.social-links .social-link:hover { opacity: .85; }
+.social-links .social-link:active { transform: translateY(1px); }
+.social-links .social-link:focus-visible {
+  outline: 2px solid rgba(14,46,97,.4);
+  outline-offset: 2px;
+}
