@@ -1,5 +1,5 @@
 .tile {
-  background: #14188F;
+  background: #ffffff;
   border-radius: 1rem;
   padding: 0.5rem;
   min-height: 10rem;
@@ -18,10 +18,81 @@
 .tile-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #ffffff;
+  color: #0e2e61;
 }
 
 .tile-text {
   font-size: 1.1rem;
-  color: #ffffff;
+  color: #0e2e61;
+    font-weight: 500;
+
+}
+
+
+.bg-primary-custom { background-color: #0e2e61 !important; }
+
+/* ----- Мобильная шапка ----- */
+.hero-header{
+  background: #0e2e61;
+  color:#fff;
+  display:block;              
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.hero-header .container{ text-align:center; }
+
+.hero-box{
+  display:inline-block;
+  max-width: 92vw;
+  text-align: left;
+}
+
+.hero-logo{
+  width:auto;
+  height:64px;
+  border-radius:.5rem;
+  object-fit: contain;
+}
+
+.hero-title,
+.hero-title-line{
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: .3px;
+}
+
+.hero-title-line{ font-size: 1.05rem; }
+
+.hero-divider{
+  margin: .5rem 0 .25rem;
+  height:2px;
+  background: rgba(255,255,255,.75);
+}
+
+.hero-subtag{
+  display:flex;
+  justify-content:center;
+  font-weight:500;
+  font-size: 0.8rem;
+  line-height: 1.25;
+}
+
+/* ----- Десктопная шапка ----- */
+header.bg-primary-custom h1,
+header.bg-primary-custom h2,
+header.bg-primary-custom .forum-title{
+  text-transform: uppercase;
+  font-weight:700;
+  letter-spacing:.3px;
+  line-height:1.05;
+}
+
+/* ----- Взаимоисключение версий ----- */
+@media (min-width: 768px){
+  .hero-header{ display:none !important; }
+  .hero-logo{ height:84px; }
+  .hero-title-line{ font-size: 1.25rem; }
 }
