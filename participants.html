@@ -27,156 +27,24 @@
     </div>
   </header>
 
-  <main class="container my-4">
-    <!-- Блок 1: Участники (с ссылками) -->
-    <section class="mb-4">
-      <div class="bg-white rounded shadow-sm p-4">
-        <h2 class="section-title-with-lines">Участники</h2>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+  <section class="container py-4">
+    <div id="participantsContainer"
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 align-items-stretch"></div>
+    <div id="participantsState" class="text-center small text-secondary mt-2"></div>
+  </section>
 
-          <!-- Карточка 1 -->
-          <div class="col">
-            <a href="https://example.com/company1" target="_blank" rel="noopener noreferrer"
-              class="text-decoration-none text-reset d-block h-100">
-              <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100 clickable-card">
-                <img src="/vpf-pwa-web/assets/img/participant_1.jpg" alt="ТехноИнновации" class="participant-logo" />
-                <h3 class="participant-name">ТехноИнновации</h3>
-                <p class="participant-description">Компания занимается разработкой передовых
-                  технологических решений</p>
-              </div>
-            </a>
-          </div>
 
-          <!-- Карточка 2 -->
-          <div class="col">
-            <a href="https://example.com/company2" target="_blank" rel="noopener noreferrer"
-              class="text-decoration-none text-reset d-block h-100">
-              <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100 clickable-card">
-                <img src="/vpf-pwa-web/assets/img/participant_2.jpg" alt="ПромСтройГрупп" class="participant-logo" />
-                <h3 class="participant-name">ПромСтройГрупп</h3>
-                <p class="participant-description">Лидер в области промышленного строительства и
-                  инфраструктуры</p>
-              </div>
-            </a>
-          </div>
 
-          <!-- Карточка 3 -->
-          <div class="col">
-            <a href="https://example.com/company3" target="_blank" rel="noopener noreferrer"
-              class="text-decoration-none text-reset d-block h-100">
-              <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100 clickable-card">
-                <img src="/vpf-pwa-web/assets/img/participant_3.jpg" alt="АгроПром" class="participant-logo" />
-                <h3 class="participant-name">АгроПром</h3>
-                <p class="participant-description">Сельскохозяйственный холдинг с современными
-                  технологиями</p>
-              </div>
-            </a>
-          </div>
+  <div class="text-center mb-3">
+    <a id="applyBtn"
+      class="btn btn-primary"
+      href="https://disk.yandex.ru/d/d-54Z51l4iX3vQ">
+      Заявка на участие
+    </a>
+  </div>
 
-          <!-- Карточка 4 -->
-          <div class="col">
-            <a href="https://example.com/company4" target="_blank" rel="noopener noreferrer"
-              class="text-decoration-none text-reset d-block h-100">
-              <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100 clickable-card">
-                <img src="/vpf-pwa-web/assets/img/participant_4.jpg" alt="ЭкоТех" class="participant-logo" />
-                <h3 class="participant-name">ЭкоТех</h3>
-                <p class="participant-description">Разработка экологически чистых технологий для
-                  промышленности</p>
-              </div>
-            </a>
-          </div>
-
-          <!-- Карточка 5 -->
-          <div class="col">
-            <a href="https://example.com/company5" target="_blank" rel="noopener noreferrer"
-              class="text-decoration-none text-reset d-block h-100">
-              <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100 clickable-card">
-                <img src="/vpf-pwa-web/assets/img/participant_5.jpg" alt="БизнесКонсалт" class="participant-logo" />
-                <h3 class="participant-name">БизнесКонсалт</h3>
-                <p class="participant-description">Консалтинговая компания для развития малого и
-                  среднего бизнеса</p>
-              </div>
-            </a>
-          </div>
-
-          <!-- Карточка 6 -->
-          <div class="col">
-            <a href="https://example.com/company6" target="_blank" rel="noopener noreferrer"
-              class="text-decoration-none text-reset d-block h-100">
-              <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100 clickable-card">
-                <img src="/vpf-pwa-web/assets/img/participant_6.jpg" alt="ИнвестПроект" class="participant-logo" />
-                <h3 class="participant-name">ИнвестПроект</h3>
-                <p class="participant-description">Управление инвестиционными проектами и венчурными
-                  фондами</p>
-              </div>
-            </a>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- Блок 2: Спикеры (без ссылок) -->
-    <section class="mb-4">
-      <div class="bg-white rounded shadow-sm p-4">
-        <h2 class="section-title-with-lines">Спикеры</h2>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-
-          <!-- Карточка 1 (без ссылки) -->
-          <div class="col">
-            <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100">
-              <img src="/vpf-pwa-web/assets/img/speaker_1.jpg" alt="Иван Иванов" class="participant-logo" />
-              <h3 class="participant-name">Иван Иванов</h3>
-              <p class="participant-description">Эксперт в области промышленного развития и инновационных
-                технологий</p>
-            </div>
-          </div>
-
-          <!-- Карточка 2 (без ссылки) -->
-          <div class="col">
-            <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100">
-              <img src="/vpf-pwa-web/assets/img/speaker_2.jpg" alt="Мария Петрова" class="participant-logo" />
-              <h3 class="participant-name">Мария Петрова</h3>
-              <p class="participant-description">Специалист по международным экономическим отношениям и
-                экспорту</p>
-            </div>
-          </div>
-
-          <!-- Карточка 3 (без ссылки) -->
-          <div class="col">
-            <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100">
-              <img src="/vpf-pwa-web/assets/img/speaker_3.jpg" alt="Алексей Сидоров" class="participant-logo" />
-              <h3 class="participant-name">Алексей Сидоров</h3>
-              <p class="participant-description">Предприниматель и инвестор в сфере высоких технологий</p>
-            </div>
-          </div>
-
-          <!-- Карточка 4 (без ссылки) -->
-          <div class="col">
-            <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100">
-              <img src="/vpf-pwa-web/assets/img/speaker_4.jpg" alt="Елена Кузнецова" class="participant-logo" />
-              <h3 class="participant-name">Елена Кузнецова</h3>
-              <p class="participant-description">Эксперт по цифровой трансформации бизнеса</p>
-            </div>
-          </div>
-
-          <!-- Карточка 5 (без ссылки) -->
-          <div class="col">
-            <div class="participant-card text-center bg-white rounded shadow-sm p-4 h-100">
-              <img src="/vpf-pwa-web/assets/img/speaker_5.jpg" alt="Дмитрий Волков" class="participant-logo" />
-              <h3 class="participant-name">Дмитрий Волков</h3>
-              <p class="participant-description">Специалист по устойчивому развитию и экологическим
-                инициативам</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-  </main>h
-
+  <script src="/script.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
 
+</body>
 </html>
