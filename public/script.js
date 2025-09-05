@@ -530,6 +530,39 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('hallsContainer')) loadMapData();
 });
 
+
+(() => {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+
+  // открытие
+  document.querySelectorAll('.plan-item').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const src = a.dataset.full || a.href;
+      lbImg.src = src;
+      lbImg.alt = a.querySelector('img')?.alt || '';
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden'; // запрет скролла фона
+    });
+  });
+
+  // закрытие по клику по фону/крестику
+  const close = () => {
+    lb.hidden = true;
+    lbImg.src = '';
+    document.body.style.overflow = '';
+  };
+  lb.addEventListener('click', e => {
+    if (e.target === lb || e.target.classList.contains('lightbox-close')) close();
+  });
+  // закрытие по Esc
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !lb.hidden) close();
+  });
+})();
+
+
 // window.addEventListener('load', () => { ВЕРНУТЬ ЧТОБЫ ОТОБРАЗИЛОСЬ ОКНО
 //     setTimeout(ensureFirstRunProfile, 0);
 // });
