@@ -4,17 +4,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Участники</title>
+  <title>Участники и спикеры</title>
   <link rel="icon" type="image/png" href="/vpf-pwa-web/assets/img/logo.png" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <link rel="stylesheet" href="/src/css/style.css">
-  <link rel="stylesheet" href="/src/css/participants.css">
+  <link rel="styleindex" href="/src/css/participants.css">
 </head>
 
 <body>
   <!-- Хэдер -->
-  <header class="bg-primary-custom shadow-custom py-3 sticky-top">
+  <header class="bg-primary-custom py-3 sticky-top">
     <div class="container position-relative">
       <!-- Кнопка Назад -->
       <a href="/vpf-pwa-web/index.html"
@@ -23,28 +23,207 @@
         <span class="back-button-label">Назад</span>
       </a>
       <!-- Заголовок по центру -->
-      <h1 class="page-title text-white m-0 text-center">Участники</h1>
+      <h1 class="page-title text-white m-0 text-center">Участники и спикеры</h1>
     </div>
   </header>
 
-  <section class="container py-4">
-    <div id="participantsContainer"
-        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 align-items-stretch"></div>
-    <div id="participantsState" class="text-center small text-secondary mt-2"></div>
-  </section>
+  <main class="container my-4">
+    <!-- Секция участников -->
+    <div class="content-container fade-in">
+      <div class="section-title-with-lines">
+        <span>Участники</span>
+      </div>
+      <div id="participants-container" class="row">
+        <div class="col-12 text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+          </div>
+          <p>Загрузка участников...</p>
+        </div>
+      </div>
+    </div>
 
+    <!-- Секция спикеров -->
+    <div class="content-container fade-in">
+      <div class="section-title-with-lines">
+        <span>Спикеры</span>
+      </div>
+      <div id="speakers-container" class="row">
+        <div class="col-12 text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+          </div>
+          <p>Загрузка спикеров...</p>
+        </div>
+      </div>
+    </div>
 
+    <div class="text-center mt-4">
+      <a id="applyBtn" class="btn btn-primary-custom btn-lg" href="https://disk.yandex.ru/d/d-54Z51l4iX3vQ">
+        Подать заявку на участие
+      </a>
+    </div>
+  </main>
 
-  <div class="text-center mb-3">
-    <a id="applyBtn"
-      class="btn btn-primary"
-      href="https://disk.yandex.ru/d/d-54Z51l4iX3vQ">
-      Заявка на участие
-    </a>
-  </div>
-
-  <script src="/script.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Функция для загрузки JSON файла
+    async function loadJSON(filename) {
+      try {
+        console.log(`Загрузка файла: data/${filename}`);
+        const response = await fetch(`data/${filename}`);
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(`Файл ${filename} успешно загружен:`, data);
+        return data;
+
+      } catch (error) {
+        console.error(`Ошибка загрузки JSON (${filename}):`, error);
+        return null;
+      }
+    }
+
+    // Функция для создания карточек участников
+    function createParticipantCards(participants) {
+      const container = document.getElementById('participants-container');
+      container.innerHTML = '';
+
+      if (!participants || participants.length === 0) {
+        container.innerHTML = '<div class="col-12 text-center"><p>Нет данных об участниках</p></div>';
+        return;
+      }
+
+      participants.forEach(participant => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4 col-sm-6 mb-4';
+
+        const link = document.createElement('a');
+        link.href = participant.url || '#';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = 'text-decoration-none text-reset d-block h-100';
+
+        const card = document.createElement('div');
+        card.className = 'partner-card text-center bg-white rounded shadow-sm p-4 h-100 clickable-card';
+
+        const logo = document.createElement('img');
+        logo.src = participant.logo;
+        logo.alt = participant.name;
+        logo.className = 'partner-logo';
+        logo.onerror = function () {
+          this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9IjAuMzVlbSI+TG9nbyBub3QgZm91bmQ8L3RleHQ+PC9zdmc+';
+        };
+
+        const name = document.createElement('p');
+        name.className = 'partner-name';
+        name.textContent = participant.name;
+
+        card.appendChild(logo);
+        card.appendChild(name);
+
+        if (participant.description) {
+          const description = document.createElement('p');
+          description.className = 'participant-description';
+          description.textContent = participant.description;
+          card.appendChild(description);
+        }
+
+        link.appendChild(card);
+        col.appendChild(link);
+        container.appendChild(col);
+      });
+    }
+
+    // Функция для создания карточек спикеров
+    function createSpeakerCards(speakers) {
+      const container = document.getElementById('speakers-container');
+      container.innerHTML = '';
+
+      if (!speakers || speakers.length === 0) {
+        container.innerHTML = '<div class="col-12 text-center"><p>Нет данных о спикерах</p></div>';
+        return;
+      }
+
+      console.log('Создание карточек для спикеров:', speakers);
+
+      speakers.forEach(speaker => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4 col-sm-6 mb-4';
+
+        const card = document.createElement('div');
+        card.className = 'speaker-card text-center bg-white rounded shadow-sm p-4 h-100 clickable-card';
+
+        const photo = document.createElement('img');
+        photo.src = speaker.photo;
+        photo.alt = speaker.name;
+        photo.className = 'speaker-photo';
+        photo.onerror = function () {
+          this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9Ijc1IiB5PSI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QaG90byBub3QgZm91bmQ8L3RleHQ+PC9zdmc+';
+        };
+
+        const name = document.createElement('p');
+        name.className = 'speaker-name';
+        name.textContent = speaker.name;
+
+        const description = document.createElement('p');
+        description.className = 'speaker-description';
+        description.textContent = speaker.description;
+
+        card.appendChild(photo);
+        card.appendChild(name);
+        card.appendChild(description);
+
+        col.appendChild(card);
+        container.appendChild(col);
+      });
+    }
+
+    // Основная функция загрузки данных
+    async function loadData() {
+      try {
+        console.log('Начало загрузки данных...');
+
+        // Загружаем данные участников
+        const participantsData = await loadJSON('participants.json');
+        if (participantsData && participantsData.items) {
+          createParticipantCards(participantsData.items);
+        } else {
+          document.getElementById('participants-container').innerHTML =
+            '<div class="col-12 text-center text-danger"><p>Ошибка загрузки участников</p></div>';
+        }
+
+        // Загружаем данные спикеров
+        const speakersData = await loadJSON('speakers.json');
+        console.log('Данные спикеров:', speakersData);
+
+        if (speakersData && Array.isArray(speakersData)) {
+          createSpeakerCards(speakersData);
+        } else if (speakersData && speakersData.items) {
+          // Если данные в формате {items: [...]}
+          createSpeakerCards(speakersData.items);
+        } else {
+          document.getElementById('speakers-container').innerHTML =
+            '<div class="col-12 text-center text-danger"><p>Ошибка загрузки спикеров</p></div>';
+        }
+
+        // Анимация появления элементов
+        const contentContainers = document.querySelectorAll('.content-container');
+        contentContainers.forEach(container => {
+          container.classList.add('fade-in');
+        });
+
+      } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+      }
+    }
+
+    // Загружаем данные при загрузке страницы
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
 </body>
+
 </html>
