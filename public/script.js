@@ -249,29 +249,30 @@ function renderProgram(events) {
         const isFav = window.Fav.has(eid);
 
         const cardHTML = `
-    <div class="program-section">
-        <div class="section-time">${event.time || ''}</div>
-        <div class="section-title">${event.title || ''}</div>
-        <div class="section-location">${event.location || ''}</div>
+  <div class="program-section">
+    <div class="section-time">${event.time || ''}</div>
+    <div class="section-title">${event.title || ''}</div>
+    <div class="section-location">${event.location || ''}</div>
 
-        <div class="buttons-container">
-            <button class="btn ${isFav ? 'btn-primary' : 'btn-outline-primary'} btn-fav"
-                    data-event-id="${eid}"
-                    onclick="toggleFavorite('${eid}', event)">
-                <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
-                <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
-            </button>
+    <div class="buttons-container">
+      <button class="btn-program btn-fav ${isFav ? '' : 'btn-program--ghost'}"
+              data-event-id="${eid}"
+              onclick="toggleFavorite('${eid}', event)">
+        <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
+        <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
+      </button>
 
-            <button class="btn btn-details" onclick="toggleCollapse(${index}, event)">
-                <i class="bi bi-chevron-down"></i> Подробнее
-            </button>
-        </div>
-
-        <div class="collapse-box" id="${collapseId}">
-            ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
-            ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
-        </div>
+      <button class="btn-program btn-program--ghost btn-details"
+              onclick="toggleCollapse(${index}, event)">
+        <i class="bi bi-chevron-down"></i> Подробнее
+      </button>
     </div>
+
+    <div class="collapse-box" id="${collapseId}">
+      ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
+      ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
+    </div>
+  </div>
     `;
 
         container.insertAdjacentHTML('beforeend', cardHTML);

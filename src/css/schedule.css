@@ -45,23 +45,8 @@
 }
 
 .collapse-box.active {
-    max-height: 500px;
+    max-height: 5000px;
     padding: 1rem 0;
-}
-
-.btn-details {
-    background-color: #0e2e61;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    transition: all 0.3s;
-    display: inline-block;
-}
-
-.btn-details:hover {
-    background-color: #1a4b9b;
-    color: white;
 }
 
 .btn-remove {
@@ -87,4 +72,47 @@
     display: flex;
     align-items: center;
     margin-top: 10px;
+}
+
+/* ЕДИНЫЙ СТИЛЬ КНОПОК ПРОГРАММЫ */
+.btn-program {
+  background-color: #0e2e61;
+  color: #fff;
+  border: 1px solid #0e2e61;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;            /* отступ между иконкой и текстом */
+  line-height: 1.25;
+  transition: background-color .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease;
+  text-decoration: none;
+}
+
+.btn-program:hover { background-color: #1a4b9b; color: #fff; border-color: #1a4b9b; }
+.btn-program:active { transform: translateY(0.5px); }
+
+.btn-program:focus-visible {
+  outline: 2px solid #1a4b9b;
+  outline-offset: 2px;
+}
+
+/* Модификатор «прозрачная» (как прежний outline) */
+.btn-program--ghost {
+  background: transparent;
+  color: #0e2e61;
+  border-color: #0e2e61;
+}
+.btn-program--ghost:hover {
+  background-color: #0e2e61;
+  color: #fff;
+}
+
+/* Небольшой твик контейнера с кнопками — одинаковые промежутки и перенос */
+.buttons-container {
+  display: flex;
+  align-items: center;
+  gap: .5rem;      /* ДОБАВЛЕНО */
+  flex-wrap: wrap; /* ДОБАВЛЕНО */
+  margin-top: 10px;
 }
