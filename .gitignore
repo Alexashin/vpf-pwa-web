@@ -13,7 +13,6 @@ dist-ssr
 *.local
 
 .venv/
-.mvenv/
 
 # Editor directories and files
 .vscode/*
