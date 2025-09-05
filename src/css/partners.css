@@ -83,3 +83,36 @@
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
+
+.section-title-without-lines {
+  font-size: 1.5rem;
+  font-weight: 650;
+  color: #0e2e61;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Стили для центрирования последнего блока */
+.row {
+  position: relative;
+}
+
+.col-12.d-flex.justify-content-center {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+/* Адаптивность для центрированного блока */
+@media (max-width: 767.98px) {
+  .col-md-4.col-sm-6 {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .col-md-4.col-sm-6 {
+    max-width: 50%;
+    flex: 0 0 50%;
+  }
+}
