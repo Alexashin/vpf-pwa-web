@@ -427,6 +427,8 @@ async function loadScheduleData(){
     const list = all.filter(ev => fav.has(getEventId(ev)));
 
     const container = document.getElementById('scheduleContainer');
+    if (!container) return;
+    
     if (!list.length){
       container.innerHTML = `
         <div class="text-muted">
@@ -683,6 +685,8 @@ document.addEventListener('DOMContentLoaded', () => {
 (() => {
   const lb = document.getElementById('lightbox');
   const lbImg = document.getElementById('lightbox-img');
+  
+  if (!lb || !lbImg) return;
 
   // открытие
   document.querySelectorAll('.plan-item').forEach(a => {
