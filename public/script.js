@@ -33,13 +33,12 @@
                                 </select>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="consent" name="consent">
+                                <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
                                 <label class="form-check-label" for="consent">Согласие на обработку персональных данных</label>
                             </div>
-                            <small class="text-muted d-block mt-2">Данные сохраняются только на вашем устройстве.</small>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary" type="submit">Сохранить</button>
+                            <button class="btn btn-primary" type="submit" id="firstRunSaveBtn">Сохранить</button>
                         </div>
                     </form>
                 </div>
@@ -160,18 +159,39 @@
             modal.show();
 
             const form = document.getElementById('firstRunForm');
+            const saveBtn = document.getElementById('firstRunSaveBtn');
+            const consentEl = document.getElementById('consent');
+
+            // (опционально) блокируем кнопку, пока не стоит галочка
+            if (saveBtn && consentEl) {
+                saveBtn.disabled = !consentEl.checked;
+                consentEl.addEventListener('change', () => {
+                    saveBtn.disabled = !consentEl.checked;
+                });
+            }
             form?.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const fd = new FormData(form);
                 const data = {
                     fullName: String(fd.get('fullName') || '').trim(),
-                    company: String(fd.get('company') || '').trim(),
-                    role: String(fd.get('role') || '').trim(),
-                    consent: !!fd.get('consent')
+                    company:  String(fd.get('company') || '').trim(),
+                    role:     String(fd.get('role') || '').trim(),
+                    consent:  !!fd.get('consent')
                 };
+
                 if (!data.fullName) return;
+
+                // сохраняем локально всегда
                 Profile.save(data);
-                ProfileSync.enqueue(data);
+
+                // ОТПРАВКА ТОЛЬКО ПРИ СОГЛАСИИ
+                if (data.consent) {
+                    ProfileSync.enqueue(data);   // уйдёт в Google Form / очередь
+                } else {
+                    // (опционально) подскажем пользователю
+                    console.info('[Анкета] Согласие не дано — данные не отправляются во внешние сервисы');
+                }
+
                 bootstrap.Modal.getInstance(el)?.hide();
             });
         });
