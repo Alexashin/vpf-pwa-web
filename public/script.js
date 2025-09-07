@@ -647,6 +647,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('hallsContainer')) loadMapData();
 });
 
-// window.addEventListener('load', () => {
-//     setTimeout(ensureFirstRunProfile, 0);
-// });
+window.addEventListener('load', () => {
+    setTimeout(ensureFirstRunProfile, 0);
+});
