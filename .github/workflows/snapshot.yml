@@ -1,0 +1,90 @@
+name: Snapshot → Build → Deploy (Pages)
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'      # каждые 3 часа
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: write   # чтобы коммитить изменения снэпшота в репо
+  pages: write      # деплой на GitHub Pages
+  id-token: write   # OIDC для Pages
+
+jobs:
+  snapshot:
+    name: Take HTML snapshot (.t521)
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Pull schedule (.t521)
+        run: npm run pull:schedule
+
+      - id: diff
+        name: Detect changes under public/vpf-pwa-web/data
+        run: |
+          if [[ -n "$(git status --porcelain public/vpf-pwa-web/data)" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit & Push snapshot
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "VPF Snapshot Bot"
+          git config user.email "snapshot@users.noreply.github.com"
+          git add public/vpf-pwa-web/data
+          git commit -m "chore(snapshot): update schedule-raw.html ($(date -u +'%F %T'))"
+          git push
+
+  build:
+    name: Build site
+    needs: snapshot
+    # билдим если данные изменились или ручной запуск
+    if: needs.snapshot.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
