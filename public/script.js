@@ -6,46 +6,45 @@
 
         const tpl = document.createElement('template');
         tpl.innerHTML = `
-            <div class="modal fade" id="firstRunModal" tabindex="-1" role="dialog" aria-modal="true">
+            <div class="modal fade" id="firstRunModal" tabindex="-1" role="dialog" aria-labelledby="firstRunTitle" aria-modal="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <form class="modal-content" id="firstRunForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Короткая анкета</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">ФИО</label>
-                            <input type="text" class="form-control" name="fullName" required />
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="firstRunTitle">Короткая анкета</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Организация (необязательно)</label>
-                            <input type="text" class="form-control" name="company" />
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label" for="firstRunFullName">ФИО</label>
+                                <input id="firstRunFullName" type="text" class="form-control" name="fullName" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Организация (необязательно)</label>
+                                <input type="text" class="form-control" name="company" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Роль</label>
+                                <select class="form-select" name="role">
+                                    <option value="">Не указывать</option>
+                                    <option>Участник</option>
+                                    <option>Спикер</option>
+                                    <option>Организатор</option>
+                                    <option>Гость</option>
+                                </select>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
+                                <label class="form-check-label" for="consent">Согласие на обработку персональных данных</label>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Роль</label>
-                            <select class="form-select" name="role">
-                                <option value="">Не указывать</option>
-                                <option>Участник</option>
-                                <option>Спикер</option>
-                                <option>Организатор</option>
-                                <option>Гость</option>
-                            </select>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit" id="firstRunSaveBtn">Сохранить</button>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="consent" name="consent">
-                            <label class="form-check-label" for="consent">Согласие на обработку персональных данных</label>
-                        </div>
-                        <small class="text-muted d-block mt-2">Данные сохраняются только на вашем устройстве.</small>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">Сохранить</button>
-                    </div>
-                </form>
-            </div>
-        </div>`;
+                    </form>
+                </div>
+            </div>`;
         document.body.appendChild(tpl.content.firstElementChild);
-        return true;
+            return true;
     }
     // Простое key-value хранилище
     const KV = {
@@ -160,22 +159,140 @@
             modal.show();
 
             const form = document.getElementById('firstRunForm');
+            const saveBtn = document.getElementById('firstRunSaveBtn');
+            const consentEl = document.getElementById('consent');
+
+            // (опционально) блокируем кнопку, пока не стоит галочка
+            if (saveBtn && consentEl) {
+                saveBtn.disabled = !consentEl.checked;
+                consentEl.addEventListener('change', () => {
+                    saveBtn.disabled = !consentEl.checked;
+                });
+            }
             form?.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const fd = new FormData(form);
                 const data = {
                     fullName: String(fd.get('fullName') || '').trim(),
-                    company: String(fd.get('company') || '').trim(),
-                    role: String(fd.get('role') || '').trim(),
-                    consent: !!fd.get('consent')
+                    company:  String(fd.get('company') || '').trim(),
+                    role:     String(fd.get('role') || '').trim(),
+                    consent:  !!fd.get('consent')
                 };
+
                 if (!data.fullName) return;
+
+                // сохраняем локально всегда
                 Profile.save(data);
+
+                // ОТПРАВКА ТОЛЬКО ПРИ СОГЛАСИИ
+                if (data.consent) {
+                    ProfileSync.enqueue(data);   // уйдёт в Google Form / очередь
+                } else {
+                    // (опционально) подскажем пользователю
+                    console.info('[Анкета] Согласие не дано — данные не отправляются во внешние сервисы');
+                }
+
                 bootstrap.Modal.getInstance(el)?.hide();
             });
         });
     };
 })();
+
+// === PROFILE SYNC -> GOOGLE FORMS ===
+(function () {
+  const QUEUE_KEY = 'vpf:profile:syncQueue';
+  const UID_KEY = 'vpf:uid';
+
+  function getUID(){
+    let u = localStorage.getItem(UID_KEY);
+    if (!u) {
+      u = (crypto.randomUUID?.() || (Date.now().toString(36)+Math.random().toString(36).slice(2)));
+      localStorage.setItem(UID_KEY, u);
+    }
+    return u;
+  }
+
+  // --- НАСТРОЙКИ: ---
+  const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdZlC6xbE6cVXdfbNCasuetSJ71ifBwBsY4nXS49Wfkk_xG0w/formResponse';
+
+  function mapToGoogleForm(profile){
+    return {
+      'entry.1702008284': profile.fullName,                // ФИО
+      'entry.401848522': profile.company || '',            // Организация
+      'entry.251234440': profile.role || '',               // Роль
+      'entry.585744429': profile.consent ? 'Согласен' : '',// Согласие
+      'entry.414224166': getUID(),                         // UID устройства (доп.столбец)
+      'entry.659803648': navigator.userAgent               // User-Agent (доп.столбец)
+    };
+  }
+  // ------------------------------------
+
+  function qGet(key, fb = []) { try { return JSON.parse(localStorage.getItem(key)) ?? fb; } catch { return fb; } }
+  function qSet(key, v)      { localStorage.setItem(key, JSON.stringify(v)); }
+
+  const Q = {
+    get(){ return qGet(QUEUE_KEY, []); },
+    set(v){ qSet(QUEUE_KEY, v); },
+    push(item){ const q = Q.get(); q.push(item); Q.set(q); },
+    shift(){ const q = Q.get(); const it = q.shift(); Q.set(q); return it; },
+    empty(){ return Q.get().length === 0; }
+  };
+
+  async function sendOne(profile){
+    // Отправка в форму: form-urlencoded + no-cors (простой путь без CORS-головной боли)
+    const body = new URLSearchParams(mapToGoogleForm(profile));
+    await fetch(GOOGLE_FORM_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body
+    });
+    // В no-cors нельзя прочитать ответ, считаем оптимистично, что ушло
+    const p = Profile.get() || {};
+    p.sync = { provider:'google_form', sent:true, ts: Date.now() };
+    Profile.save(p);
+  }
+
+  async function flush(){
+    if (Q.empty()) return;
+    // Гоним очередь по одному, чтобы не забанить форму пачкой
+    const snapshot = Q.get().slice(0, 10); 
+    const rest = [];
+    for (const item of snapshot){
+      try { await sendOne(item.profile); }
+      catch(e){ rest.push(item); }
+      Q.shift(); 
+    }
+    // если были ошибки — положим обратно в конец
+    if (rest.length) Q.set(Q.get().concat(rest));
+  }
+
+  function enqueue(profile){
+    Q.push({ profile, ts: Date.now() });
+    if (navigator.onLine) flush();
+  }
+
+  window.addEventListener('online', flush);
+  document.addEventListener('DOMContentLoaded', flush);
+
+  window.ProfileSync = { enqueue, flush, getUID };
+})();
+
+function shouldShowProfileHere() {
+    // Явный флаг со страницы — приоритет
+    if (typeof window.SHOW_PROFILE_ON_THIS_PAGE !== 'undefined') {
+        return !!window.SHOW_PROFILE_ON_THIS_PAGE;
+    }
+    // Эвристика «главная»: путь пустой, '/', '/index.html' или '/vpf-pwa-web[/index.html]'
+    const p = location.pathname.replace(/\/+$/, '');
+    return (
+        p === '' || p === '/' ||
+        p.endsWith('/index.html') ||
+        p.endsWith('/vpf-pwa-web') ||
+        p.endsWith('/vpf-pwa-web/index.html')
+    );
+}
+
 
 function removeFromFavorites(index, domEvt) {
     domEvt?.stopPropagation?.();
@@ -232,223 +349,72 @@ async function loadMyProgramData() {
     }
 }
 
-// === РЕНДЕР ТОЛЬКО ДЛЯ СТРАНИЦЫ program ===
 function renderProgram(events) {
-  const container = document.getElementById('programContainer');
-  if (!container) return;
-  container.innerHTML = '';
+    const container = document.getElementById('programContainer');
+    if (!container) return;
+    container.innerHTML = '';
 
-  events.forEach((ev, index) => {
-    const eid = getEventId(ev);
-    const isFav = window.Fav?.has(eid);
+    events.forEach((event, index) => {
+        const collapseId = `collapse-${index}`;
 
-    const topicsBlock = Array.isArray(ev.topics) && ev.topics.length
-      ? `
-        <div class="ev-block">
-          ${ev.topics.map(t => `<div class="ev-line">${t}</div>`).join('')}
-        </div>`
-      : '';
+        const topics = event.topics?.map(t => `<li class="section-topic">${t}</li>`).join('') || '';
+        const speakers = event.speakers?.map(s =>
+            `<li class="section-speaker">${s.name}${s.topic ? ` — ${s.topic}` : ''}${s.position ? ` (${s.position})` : ''}</li>`
+        ).join('') || '';
 
-    const speakersBlock = Array.isArray(ev.speakers) && ev.speakers.length
-      ? `
-        <div class="ev-block">
-          <div class="ev-block-title">Спикеры:</div>
-          ${ev.speakers.map(s => {
-            const parts = [
-              s.name || '',
-              s.topic ? ` — ${s.topic}` : '',
-              s.position ? ` (${s.position})` : ''
-            ];
-            return `<div class="ev-line">${parts.join('')}</div>`;
-          }).join('')}
-        </div>`
-      : '';
+        const eid = getEventId(event);
+        const isFav = window.Fav.has(eid);
 
-    const details = `
-      ${ev.title ? `<div class="ev-title">${ev.title}</div>` : ''}
-      ${ev.description ? `<div class="ev-block"><div class="ev-line">${ev.description}</div></div>` : ''}
-      ${topicsBlock}
-      ${speakersBlock}
-    `;
-
-    const cardHTML = `
-      <section class="program-card">
-        <!-- Левая колонка -->
-        <div class="program-left">
-          <div class="ev-time">${ev.time || ''}</div>
-          <div class="ev-hall">${ev.location || ''}</div>
-
-          <button class="btn-program btn-fav ${isFav ? '' : 'btn-program--ghost'}"
-                  data-event-id="${eid}"
-                  onclick="toggleFavorite('${eid}', event)">
-            <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
-            <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
-          </button>
-        </div>
-
-        <!-- Правая колонка -->
-        <div class="program-right">
-          ${details}
-        </div>
-      </section>
-    `;
-
-    container.insertAdjacentHTML('beforeend', cardHTML);
-  });
-}
-
-// Универсальный (но простой) тогглер только для этой страницы
-function toggleCollapse(collapseId, btnEl, evt) {
-  if (evt) evt.stopPropagation();
-  const box = document.getElementById(collapseId);
-  if (!box) return;
-  box.classList.toggle('active');
-
-  const icon = btnEl?.querySelector('i');
-  if (!icon) return;
-  if (box.classList.contains('active')) {
-    icon.classList.remove('bi-chevron-down');
-    icon.classList.add('bi-chevron-up');
-  } else {
-    icon.classList.remove('bi-chevron-up');
-    icon.classList.add('bi-chevron-down');
-  }
-}
-
-
-
-
-// === РЕНДЕР ТОЛЬКО ДЛЯ СТРАНИЦЫ schedule ===
-/* ===== helpers ===== */
-function getEventId(ev){
-  // если у тебя уже есть своя реализация — оставь её
-  return ev.id ?? [ev.time, ev.title, ev.location].filter(Boolean).join('|');
-}
-const Fav = {
-  all(){ try{ return new Set(JSON.parse(localStorage.getItem('vpf:favs')||'[]')); }catch{ return new Set(); } },
-  has(id){ return this.all().has(String(id)); }
-};
-
-async function fetchJsonFallback(urls){
-  for (const u of urls){
-    try{
-      const r = await fetch(u, {cache:'no-store'});
-      if (!r.ok) continue;
-      return await r.json();
-    }catch(e){}
-  }
-  throw new Error('Не удалось загрузить JSON по всем путям');
-}
-
-/* ===== render ===== */
-function renderSchedule(events) {
-  const container = document.getElementById('scheduleContainer');
-  if (!container) return;
-  container.innerHTML = '';
-
-  events.forEach((ev, index) => {
-    const eid = getEventId(ev);
-    const isFav = window.Fav?.has(eid);
-    const collapseId = `schedule-collapse-${index}`;
-
-    const topicsBlock = Array.isArray(ev.topics) && ev.topics.length
-      ? `<div class="ev-block"><div class="ev-block-title">Темы:</div>${ev.topics.map(t => `<div class="ev-line">${t}</div>`).join('')}</div>` : '';
-
-    const speakersBlock = Array.isArray(ev.speakers) && ev.speakers.length
-      ? `<div class="ev-block"><div class="ev-block-title">Спикеры:</div>${
-          ev.speakers.map(s => {
-            const parts = [s.name || '', s.topic ? ` — ${s.topic}` : '', s.position ? ` (${s.position})` : ''];
-            return `<div class="ev-line">${parts.join('')}</div>`;
-          }).join('')
-        }</div>` : '';
-
-    const details = `
-      ${ev.description ? `<div class="ev-block"><div class="ev-line">${ev.description}</div></div>` : ''}
-      ${topicsBlock}
-      ${speakersBlock}
-    `;
-
-    const cardHTML = `
-      <section class="program-card">
-        <div class="ev-time">${ev.time || ''}</div>
-        <div class="ev-hall">${ev.location || ''}</div>
-
-        <div class="ev-title">${ev.title || ''}</div>
+        const cardHTML = `
+    <div class="program-section">
+        <div class="section-time">${event.time || ''}</div>
+        <div class="section-title">${event.title || ''}</div>
+        <div class="section-location">${event.location || ''}</div>
 
         <div class="buttons-container">
-          <button class="btn-program btn-fav ${isFav ? '' : 'btn-program--ghost'}"
-                  data-event-id="${eid}"
-                  onclick="toggleFavorite('${eid}', event)">
-            <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
-            <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
-          </button>
+            <button class="btn ${isFav ? 'btn-primary' : 'btn-outline-primary'} btn-fav"
+                    data-event-id="${eid}"
+                    onclick="toggleFavorite('${eid}', event)">
+                <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
+                <span class="fav-label">${isFav ? ' В избранном' : ' В избранное'}</span>
+            </button>
 
-          <button class="btn-program btn-program--ghost btn-details"
-                  onclick="toggleCollapse('${collapseId}', this, event)">
-            <i class="bi bi-chevron-down"></i> Подробнее
-          </button>
+            <button class="btn btn-details" onclick="toggleCollapse(${index}, event)">
+                <i class="bi bi-chevron-down"></i> Подробнее
+            </button>
         </div>
 
         <div class="collapse-box" id="${collapseId}">
-          ${details}
+            ${topics ? `<strong>Темы:</strong><ul>${topics}</ul>` : ''}
+            ${speakers ? `<strong>Спикеры:</strong><ul>${speakers}</ul>` : ''}
         </div>
-      </section>
+    </div>
     `;
 
-    container.insertAdjacentHTML('beforeend', cardHTML);
-  });
+        container.insertAdjacentHTML('beforeend', cardHTML);
+    });
 }
 
-/* ===== toggle ===== */
-function toggleCollapse(collapseId, btnEl, evt){
-  if (evt) evt.stopPropagation();
-  const box = document.getElementById(collapseId);
-  if (!box) return;
-  box.classList.toggle('active');
-  const icon = btnEl.querySelector('i');
-  if (!icon) return;
-  if (box.classList.contains('active')){
-    icon.classList.replace('bi-chevron-down','bi-chevron-up');
-  }else{
-    icon.classList.replace('bi-chevron-up','bi-chevron-down');
-  }
-}
 
-/* ===== load only favorites for schedule ===== */
-async function loadScheduleData(){
-  try{
-    const data = await fetchJsonFallback([
-      '/vpf-pwa-web/data/schedule.json',
-      'data/schedule.json',
-      './data/schedule.json'
-    ]);
-    const all = Array.isArray(data?.events) ? data.events : [];
-    const fav = Fav.all();
-    const list = all.filter(ev => fav.has(getEventId(ev)));
+function toggleCollapse(index, event) {
+    if (event) event.stopPropagation();
 
-    const container = document.getElementById('scheduleContainer');
-    if (!container) return;
-    
-    if (!list.length){
-      container.innerHTML = `
-        <div class="text-muted">
-          В избранном пусто. Отметьте интересующие события на странице «Программа».
-        </div>`;
-      return;
+    const box = document.getElementById(`collapse-${index}`);
+    if (!box) return;
+
+    box.classList.toggle('active');
+
+    const btn = box.previousElementSibling.querySelector('.btn-details');
+    const icon = btn.querySelector('i');
+
+    if (box.classList.contains('active')) {
+        icon.classList.remove('bi-chevron-down');
+        icon.classList.add('bi-chevron-up');
+    } else {
+        icon.classList.remove('bi-chevron-up');
+        icon.classList.add('bi-chevron-down');
     }
-    renderSchedule(list);
-  }catch(err){
-    console.error(err);
-    const container = document.getElementById('scheduleContainer');
-    if (container) container.innerHTML = `<div class="text-danger">Не удалось загрузить данные расписания.</div>`;
-  }
 }
-
-/* запуск после готовности DOM */
-document.addEventListener('DOMContentLoaded', loadScheduleData);
-
-
-
 
 //location
 
@@ -681,41 +647,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('hallsContainer')) loadMapData();
 });
 
-
-(() => {
-  const lb = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lightbox-img');
-  
-  if (!lb || !lbImg) return;
-
-  // открытие
-  document.querySelectorAll('.plan-item').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      const src = a.dataset.full || a.href;
-      lbImg.src = src;
-      lbImg.alt = a.querySelector('img')?.alt || '';
-      lb.hidden = false;
-      document.body.style.overflow = 'hidden'; // запрет скролла фона
-    });
-  });
-
-  // закрытие по клику по фону/крестику
-  const close = () => {
-    lb.hidden = true;
-    lbImg.src = '';
-    document.body.style.overflow = '';
-  };
-  lb.addEventListener('click', e => {
-    if (e.target === lb || e.target.classList.contains('lightbox-close')) close();
-  });
-  // закрытие по Esc
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && !lb.hidden) close();
-  });
-})();
-
-
-// window.addEventListener('load', () => { ВЕРНУТЬ ЧТОБЫ ОТОБРАЗИЛОСЬ ОКНО
-//     setTimeout(ensureFirstRunProfile, 0);
-// });
+window.addEventListener('load', () => {
+    setTimeout(ensureFirstRunProfile, 0);
+});
