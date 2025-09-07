@@ -75,6 +75,13 @@
     window.Fav = Fav;
     window.Profile = Profile;
 
+    const ASK_KEY = 'vpf:profile:asked'; // «анкету уже показывали»
+    const FirstRunFlag = {
+        was() { return localStorage.getItem(ASK_KEY) === '1'; },
+        set() { localStorage.setItem(ASK_KEY, '1'); },
+        reset() { localStorage.removeItem(ASK_KEY); } // удобно для тестов
+    };
+
     // Анкета первого входа: модал #firstRunModal + #firstRunForm, иначе prompt
     window.ensureFirstRunProfile = function ensureFirstRunProfile() {
         if (window.Profile.get()) return;
@@ -135,21 +142,32 @@
     window.ensureFirstRunProfile = function ensureFirstRunProfile() {
         const prof = Profile.get();
         const hasName = !!(prof && String(prof.fullName || '').trim());
-        if (hasName) return;
 
+        // 1) Если профиль уже есть ИЛИ мы уже показывали анкету — выходим
+        if (hasName || FirstRunFlag.was()) return;
+
+        // 2) Вставляем разметку, если её нет
         injectProfileModalIfMissing();
         const el = document.getElementById('firstRunModal');
-        if (!(window.bootstrap && bootstrap.Modal) || !el) return;
+        if (!(window.bootstrap && bootstrap.Modal) || !el) {
+            // даже если бутстрапа нет — считаем, что попытка показа была, чтобы не спамить дальше
+            FirstRunFlag.set();
+            return;
+        }
 
-        if (el.classList.contains('show')) return; // уже открыт
+        if (el.classList.contains('show')) return; // подстраховка
+
+        // 3) Гарантируем показ один раз: ставим флаг ПЕРЕД показом
+        FirstRunFlag.set();
 
         requestAnimationFrame(() => {
             const modal = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false });
-            // автофокус на поле
+
             el.addEventListener('shown.bs.modal', () => {
                 el.querySelector('#firstRunFullName')?.focus();
             }, { once: true });
-            // перед скрытием — убираем фокус, чтобы не было конфликта с aria-hidden
+
+            // (необязательно) косметика со фокусом при закрытии
             el.addEventListener('hide.bs.modal', () => {
                 if (document.activeElement && el.contains(document.activeElement)) {
                     document.activeElement.blur();
@@ -162,13 +180,13 @@
             const saveBtn = document.getElementById('firstRunSaveBtn');
             const consentEl = document.getElementById('consent');
 
-            // (опционально) блокируем кнопку, пока не стоит галочка
             if (saveBtn && consentEl) {
                 saveBtn.disabled = !consentEl.checked;
                 consentEl.addEventListener('change', () => {
                     saveBtn.disabled = !consentEl.checked;
                 });
             }
+
             form?.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const fd = new FormData(form);
@@ -178,24 +196,16 @@
                     role:     String(fd.get('role') || '').trim(),
                     consent:  !!fd.get('consent')
                 };
-
                 if (!data.fullName) return;
 
-                // сохраняем локально всегда
                 Profile.save(data);
-
-                // ОТПРАВКА ТОЛЬКО ПРИ СОГЛАСИИ
-                if (data.consent) {
-                    ProfileSync.enqueue(data);   // уйдёт в Google Form / очередь
-                } else {
-                    // (опционально) подскажем пользователю
-                    console.info('[Анкета] Согласие не дано — данные не отправляются во внешние сервисы');
-                }
+                if (data.consent) ProfileSync.enqueue(data);
 
                 bootstrap.Modal.getInstance(el)?.hide();
             });
         });
     };
+
 })();
 
 // === PROFILE SYNC -> GOOGLE FORMS ===
