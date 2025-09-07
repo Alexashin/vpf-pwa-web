@@ -29,6 +29,32 @@ const assetUrls = [
   '/vpf-pwa-web/assets/img/small-hall-schem.png',
   '/vpf-pwa-web/assets/img/zal.png',
   '/vpf-pwa-web/assets/img/map-fallback.png'
+    '/vpf-pwa-web/',
+    '/vpf-pwa-web/index.html',
+    '/vpf-pwa-web/participants.html',
+    '/vpf-pwa-web/program.html',
+    '/vpf-pwa-web/organizers.html',
+    '/vpf-pwa-web/about.html',
+    '/vpf-pwa-web/partners.html',
+    '/vpf-pwa-web/map.html',
+    '/vpf-pwa-web/location.html',
+    '/vpf-pwa-web/contacts.html',
+    '/vpf-pwa-web/script.js',
+    '/vpf-pwa-web/manifest.json',
+    '/vpf-pwa-web/data/location.json',
+    '/vpf-pwa-web/data/partnes.json',
+    '/vpf-pwa-web/data/schedule.json',
+    '/vpf-pwa-web/data/contacts.json',
+    '/vpf-pwa-web/data/speakers.json',
+    '/vpf-pwa-web/data/map.json',
+    '/vpf-pwa-web/assets/img/full-logo.png',
+    '/vpf-pwa-web/assets/img/logo.png',
+    '/vpf-pwa-web/assets/img/big-hall-pic.png',
+    '/vpf-pwa-web/assets/img/big-hall-schem.png',
+    '/vpf-pwa-web/assets/img/small-hall-pic.png',
+    '/vpf-pwa-web/assets/img/small-hall-schem.png',
+    '/vpf-pwa-web/assets/img/zal.png',
+    '/vpf-pwa-web/assets/img/map-fallback.png'
 ];
 
 self.addEventListener('install', event => {

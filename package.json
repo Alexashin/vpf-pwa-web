@@ -5,14 +5,18 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "pull:schedule": "node tools/pull-schedule.js",
+    "dev": "npm run pull:schedule && vite",
+    "build": "npm run pull:schedule && vite build",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "homepage": "https://Alexashin.github.io/vpf-pwa-web/",
   "devDependencies": {
     "gh-pages": "^6.3.0",
     "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.2"
   }
 }

@@ -8,7 +8,6 @@ export default defineConfig({
             input: {
                 main: resolve(__dirname, 'index.html'),
                 about: resolve(__dirname, 'about.html'),
-                schedule: resolve(__dirname, 'schedule.html'),
                 partners: resolve(__dirname, 'partners.html'),
                 map: resolve(__dirname, 'map.html'),
                 location: resolve(__dirname, 'location.html'),

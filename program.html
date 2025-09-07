@@ -27,23 +27,13 @@
         </div>
     </header>
 
-    <div class="container py-4">
-        <!-- Контейнер для карточек -->
-        <div id="programContainer"></div>
-    </div>
+    <main class="container">
+        <iframe id="scheduleFrame" src="vpf-pwa-web/data/schedule-raw.html" loading="lazy"
+            style="width:100%;border:0;min-height:80vh"></iframe>
+    </main>
 
-
-
-    <div class="text-center mb-3">
-        <a id="applyBtn"
-        class="btn btn-primary"
-        href="https://disk.yandex.ru/d/mjsH8W4nrfqasA">
-        Скачать программу
-        </a>
-    </div>
-
-    <!-- Скрипты -->
-    <script src="script.js"></script>
+    <script src="/vpf-pwa-web/js/favs-core.js"></script>
+    <script src="/vpf-pwa-web/js/schedule-loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
