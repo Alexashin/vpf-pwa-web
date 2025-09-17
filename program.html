@@ -53,6 +53,61 @@
     <script src="/vpf-pwa-web/js/favs-core.js"></script>
     <script src="/vpf-pwa-web/js/schedule-loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+    document.getElementById('scheduleFrame').addEventListener('load', () => {
+    const doc = document.getElementById('scheduleFrame').contentDocument;
+    if (!doc) return;
+
+    // Находим нашу кнопку (она там одна с такими классами)
+    const btn = doc.querySelector('a.t-btn.t-btnflex.t-btnflex_type_bbutton');
+    if (!btn) return;
+
+    // 1) Удаляем встроенный <style> в самой ссылке — именно он ломает поведение
+    btn.querySelector('style')?.remove();
+
+    // 2) Узнаём ближайший rec-ID (Тильда оборачивает кнопку в блок вида #recXXXX…)
+    const rec = btn.closest('[id^="rec"]');
+    const recSel = rec ? `#${rec.id}` : '';
+
+    // 3) Вешаем наш класс
+    btn.classList.add('vpf-download-btn');
+
+    // 4) Вставляем стили в сам iframe с БОЛЬШЕЙ специфичностью, чем у Тильды
+    const style = doc.createElement('style');
+    style.textContent = `
+        ${recSel} .t-btnflex.t-btnflex_type_bbutton.vpf-download-btn {
+        color:#ffffff !important;
+        background-color:#14188F !important;
+        border:3px solid #14188F !important;
+        box-shadow:none !important;
+        transition:background-color .2s ease, color .2s ease, border-color .2s ease;
+        text-decoration:none !important;
+        padding: 15px 60px !important; 
+        }
+        ${recSel} .t-btnflex.t-btnflex_type_bbutton.vpf-download-btn .t-btnflex__text {
+        color:#ffffff !important;
+        }
+
+        /* Ховер — фон белый, текст и бортики синие */
+        ${recSel} .t-btnflex.t-btnflex_type_bbutton.vpf-download-btn:hover,
+        ${recSel} .t-btnflex.t-btnflex_type_bbutton.vpf-download-btn:focus,
+        ${recSel} .t-btnflex.t-btnflex_type_bbutton.vpf-download-btn:active {
+        color:#14188f !important;
+        background-color:#ffffff !important;
+        border-color:#14188F !important;
+        }
+        ${recSel} .t-btnflex.t-btnflex_type_bbutton.vpf-download-btn:hover .t-btnflex__text,
+        ${recSel} .t-btnflex.t-btnflex_type_bbutton.vpf-download-btn:focus .t-btnflex__text,
+        ${recSel} .t-btnflex.t-btnflex_type_bbutton.vpf-download-btn:active .t-btnflex__text {
+        color:#14188F !important;
+        }
+    `;
+    doc.head.appendChild(style);
+    });
+    </script>
+
 </body>
 
 </html>
