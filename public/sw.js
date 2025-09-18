@@ -12,6 +12,7 @@ const assetUrls = [
     '/vpf-pwa-web/map.html',
     '/vpf-pwa-web/location.html',
     '/vpf-pwa-web/contacts.html',
+    '/vpf-pwa-web/negotiation.html',
     '/vpf-pwa-web/script.js',
     '/vpf-pwa-web/manifest.json',
     '/vpf-pwa-web/data/location.json',

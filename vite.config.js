@@ -14,6 +14,7 @@ export default defineConfig({
                 contacts: resolve(__dirname, 'contacts.html'),
                 organizers: resolve(__dirname, 'organizers.html'),
                 program: resolve(__dirname, 'program.html'),
+                negotiation: resolve(__dirname, 'negotiation.html'),
                 participants: resolve(__dirname, 'participants.html')
             }
         }
